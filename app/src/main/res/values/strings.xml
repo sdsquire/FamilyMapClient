@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">FamilyMapClient</string>
+    <string name="loginLabel0">Server Host:</string>
+    <string name="loginLabel1">Server Port:</string>
+    <string name="loginLabel2">Username:</string>
+    <string name="loginLabel3">Password:</string>
+    <string name="loginLabel4">First Name</string>
+    <string name="loginLabel5">Last Name</string>
+    <string name="loginLabel6">Email</string>
+    <string name="loginLabel7">Gender</string>
+    <string name="gender1">Male</string>
+    <string name="gender0">Female</string>
+    <string name="loginButton">LOGIN</string>
+    <string name="registerButton">REGISTER</string>
 </resources>
