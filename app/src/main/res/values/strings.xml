@@ -12,4 +12,6 @@
     <string name="gender0">Female</string>
     <string name="loginButton">LOGIN</string>
     <string name="registerButton">REGISTER</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
