@@ -10,8 +10,8 @@ import Results.*;
 import Requests.*;
 
 public class ServerProxy {
-    private String serverHost;
-    private String serverPort;
+    private final String serverHost;
+    private final String serverPort;
 
     public ServerProxy(String serverHost, String serverPort){
         this.serverHost = serverHost;
@@ -31,12 +31,12 @@ public class ServerProxy {
 
             new OutputStreamWriter(http.getOutputStream()).write(req);
             http.getOutputStream().close();
-
-            if (http.getResponseCode() == HttpURLConnection.HTTP_OK)
-                System.out.println("Login Successful!");
-
-            else
-                System.out.println("Login Unsuccessful");
+//
+//            if (http.getResponseCode() == HttpURLConnection.HTTP_OK)
+//                System.out.println("Login Successful!");
+//
+//            else
+//                System.out.println("Login Unsuccessful");
 
 
 
@@ -60,8 +60,7 @@ public class ServerProxy {
 
             // RETURN REGISTER RESULT //
             Reader resultBody = new InputStreamReader(http.getInputStream());
-            RegisterResult result = new Gson().fromJson(resultBody, RegisterResult.class);
-            return result;
+            return new Gson().fromJson(resultBody, RegisterResult.class);
 
         } catch (IOException e) {
             e.printStackTrace();

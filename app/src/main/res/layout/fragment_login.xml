@@ -67,11 +67,11 @@
                 android:id="@+id/loginUserNameLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/loginUserNameField"
+                android:labelFor="@+id/loginUsernameField"
                 android:text="@string/loginLabel2"/>
 
             <EditText
-                android:id="@+id/loginUserNameField"
+                android:id="@+id/loginUsernameField"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
