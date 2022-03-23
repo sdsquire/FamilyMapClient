@@ -1,66 +1,100 @@
 package com.example.familymapclient;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.*;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.concurrent.Executors;
+import Requests.RegisterRequest;
+import Results.RegisterResult;
+
 public class LoginFragment extends Fragment {
-    public interface Listener { public void userAuthenticated(); }
+    public interface Listener { void userAuthenticated(); }
     private Listener listener;
-
     public void registerListener(Listener listener) {this.listener = listener;}
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private Button loginButton;
+    private Button registerButton;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public LoginFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment loginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public LoginFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        loginButton = view.findViewById(R.id.loginButton);
+        registerButton = view.findViewById(R.id.registerButton);
+
+        loginButton.setOnClickListener(View -> Toast.makeText(getActivity(), R.string.loginButton,Toast.LENGTH_SHORT).show());
+        registerButton.setOnClickListener(View -> {
+            Toast.makeText(getActivity(), R.string.registerButton, Toast.LENGTH_SHORT).show();
+
+            //Check if listener is not null
+
+            String serverHost = ((EditText) view.findViewById(R.id.loginServerHostField)).getText().toString();
+            String serverPort = ((EditText) view.findViewById(R.id.loginServerPortField)).getText().toString();
+            String username = ((EditText) view.findViewById(R.id.loginUserNameField)).getText().toString();
+            String password = ((EditText) view.findViewById(R.id.loginPasswordField)).getText().toString();
+            String email = ((EditText) view.findViewById(R.id.loginEmailField)).getText().toString();
+            String firstName = ((EditText) view.findViewById(R.id.loginFirstNameField)).getText().toString();
+            String lastName = ((EditText) view.findViewById(R.id.loginLastNameField)).getText().toString();
+            int checkedGender = ((RadioGroup) view.findViewById(R.id.loginGenderButtons)).getCheckedRadioButtonId();
+            String gender = checkedGender == R.id.loginGenderMale ? "m" :
+                    checkedGender == R.id.loginGenderFemale ? "f": "n/a";
+
+            RegisterRequest req = new RegisterRequest(username, password, email, firstName, lastName, gender);
+
+            Handler uiThreadHandler = new Handler() {
+                @Override
+                public void handleMessage(Message message) {
+                    boolean success = message.getData().getBoolean("Success", false);
+                    if (success)
+                        listener.userAuthenticated();
+                    else
+                        Toast.makeText(LoginFragment.this.getActivity(), "Invalid Register", Toast.LENGTH_SHORT);
+                }
+            };
+
+            RegisterTask task = new RegisterTask(uiThreadHandler, req, serverHost, serverPort);
+            Executors.newSingleThreadExecutor().submit(task);
+            System.out.println(req);
+
+        });
+
+        return view;
+
+
+    }
+
+    private static class RegisterTask implements Runnable {
+        private final Handler messageHandler;
+        private final RegisterRequest req;
+        private final ServerProxy proxy;
+
+        public RegisterTask(Handler messageHandler, RegisterRequest req, String serverHost, String serverPort){
+            this.messageHandler = messageHandler;
+            this.req = req;
+            this.proxy = new ServerProxy(serverHost, serverPort);
+        }
+
+        @Override
+        public void run() {
+            RegisterResult result = proxy.register(req);
+
+            Message message = Message.obtain();
+            Bundle messageBundle = new Bundle();
+            messageBundle.putBoolean("Success", result.isSuccess());
+            message.setData(messageBundle);
+            messageHandler.handleMessage(message);
+
+        }
     }
 }

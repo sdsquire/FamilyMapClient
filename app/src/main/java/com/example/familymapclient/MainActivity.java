@@ -15,10 +15,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
         Fragment fragment = fragmentManager.findFragmentById(R.id.mainActivityLayout);
         if (fragment == null) {
             fragment = new LoginFragment();
-            fragment.registerListener(this);
+            ((LoginFragment) fragment).registerListener(this);
             fragmentManager.beginTransaction().add(R.id.mainActivityLayout, fragment).commit();
         } else {
-
+            if (fragment instanceof LoginFragment)
+                ((LoginFragment) fragment).registerListener(this);
         }
 
     }

@@ -1,15 +1,13 @@
 package com.example.familymapclient;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Scanner;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.io.*;
+import java.net.*;
+import java.net.URL;
 import Results.*;
 import Requests.*;
-import Models.*;
 
 public class ServerProxy {
     private String serverHost;
@@ -46,7 +44,31 @@ public class ServerProxy {
             e.printStackTrace();
         }
         return null; }
-    public RegisterResult register(RegisterRequest request){ return null; }
+    public RegisterResult register(RegisterRequest req){
+        try {
+            // PREPARE URL //
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/register");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("POST");
+            http.setDoOutput(true);
+            http.connect();
+
+            // SUBMIT REGISTER REQUEST //
+            OutputStreamWriter reqBody = new OutputStreamWriter(http.getOutputStream());
+            new Gson().toJson(req, reqBody);
+            reqBody.close();
+
+            // RETURN REGISTER RESULT //
+            Reader resultBody = new InputStreamReader(http.getInputStream());
+            RegisterResult result = new Gson().fromJson(resultBody, RegisterResult.class);
+            return result;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     GetPersonsResult getPersons() { return null; }
 
     GetEventsResult getEvents() { return null; }
