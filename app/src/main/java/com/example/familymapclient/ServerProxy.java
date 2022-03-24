@@ -17,9 +17,6 @@ public class ServerProxy {
         this.serverPort = serverPort;
     }
 
-    public String getServerHost() { return serverHost; }
-    public String getServerPort() { return serverPort; }
-
     public LoginResult login(LoginRequest req) {
         try {
             // PREPARE URL //
@@ -37,8 +34,7 @@ public class ServerProxy {
             // RETURN REGISTER RESULT //
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 Reader resultBody = new InputStreamReader(http.getInputStream());
-                LoginResult result = new Gson().fromJson(resultBody, LoginResult.class);
-                return result;
+                return new Gson().fromJson(resultBody, LoginResult.class);
             } else
                 return new LoginResult("Bad request");
 

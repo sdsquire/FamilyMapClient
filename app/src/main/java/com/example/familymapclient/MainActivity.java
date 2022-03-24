@@ -35,5 +35,4 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
         Toast.makeText(this, "Welcome " + user.getFirstName() + " " + user.getLastName() + "!", Toast.LENGTH_SHORT).show();
         fragmentManager.beginTransaction().replace(R.id.mainActivityLayout, new MapFragment()).commit();
     }
-
 }

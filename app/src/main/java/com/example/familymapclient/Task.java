@@ -1,11 +1,11 @@
 package com.example.familymapclient;
 
-import android.os.*;
-import com.example.familymapclient.*;
-import java.util.concurrent.Executors;
-import Requests.*;
-import Results.LoginResult;
-import Results.RegisterResult;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+
+import Requests.LoginRequest;
+import Requests.RegisterRequest;
 import Results.Result;
 
 public class Task implements Runnable {
@@ -29,14 +29,6 @@ public class Task implements Runnable {
         this.registerRequest= registerRequest;
         this.loginRequest = null;
         this.authtoken = null;
-    }
-
-    public Task(Handler messageHandler, String serverHost, String serverPort, String authtoken) {
-        this.messageHandler = messageHandler;
-        this.proxy = new ServerProxy(serverHost, serverPort);
-        this.registerRequest= null;
-        this.loginRequest = null;
-        this.authtoken = authtoken;
     }
 
     public void run() {
