@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import java.util.concurrent.Executors;
 
 import Requests.*;
-import com.example.familymapclient.Tasks.*;
 
 public class LoginFragment extends Fragment {
     public interface Listener { void userAuthenticated(); }
@@ -40,14 +39,14 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         // INITIALIZE VARIABLES //
-        serverHost = (EditText) view.findViewById(R.id.loginServerHostField);
-        serverPort = (EditText) view.findViewById(R.id.loginServerPortField);
-        username = (EditText) view.findViewById(R.id.loginUsernameField);
-        password = (EditText) view.findViewById(R.id.loginPasswordField);
-        firstName = (EditText) view.findViewById(R.id.loginFirstNameField);
-        lastName = (EditText) view.findViewById(R.id.loginLastNameField);
-        email = (EditText) view.findViewById(R.id.loginEmailField);
-        genderChoice = (RadioGroup) view.findViewById(R.id.loginGenderButtons);
+        serverHost = view.findViewById(R.id.loginServerHostField);
+        serverPort = view.findViewById(R.id.loginServerPortField);
+        username = view.findViewById(R.id.loginUsernameField);
+        password = view.findViewById(R.id.loginPasswordField);
+        firstName = view.findViewById(R.id.loginFirstNameField);
+        lastName = view.findViewById(R.id.loginLastNameField);
+        email = view.findViewById(R.id.loginEmailField);
+        genderChoice = view.findViewById(R.id.loginGenderButtons);
         loginButton = view.findViewById(R.id.loginButton);
         registerButton = view.findViewById(R.id.registerButton);
 
@@ -77,19 +76,19 @@ public class LoginFragment extends Fragment {
                 if (success)
                     listener.userAuthenticated();
                 else
-                    Toast.makeText(LoginFragment.this.getActivity(), "Invalid Register", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginFragment.this.getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
             }
         };
 
         loginButton.setOnClickListener(View -> {
             LoginRequest req = new LoginRequest(username.getText().toString(), password.getText().toString());
-            LoginTask task = new LoginTask(formSubmissionHandler, req, serverHost.getText().toString(), serverPort.getText().toString());
+            Task task = new Task(formSubmissionHandler, serverHost.getText().toString(), serverPort.getText().toString(), req);
             Executors.newSingleThreadExecutor().submit(task);
         });
         registerButton.setOnClickListener(View -> {
             String gender = genderChoice.getCheckedRadioButtonId() == R.id.loginGenderMale ? "m" :"f";
             RegisterRequest req = new RegisterRequest(username.getText().toString(), password.getText().toString(), email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(), gender);
-            RegisterTask task = new RegisterTask(formSubmissionHandler, req, serverHost.getText().toString(), serverPort.getText().toString());
+            Task task = new Task(formSubmissionHandler, serverHost.getText().toString(), serverPort.getText().toString(), req);
             Executors.newSingleThreadExecutor().submit(task);
         });
 

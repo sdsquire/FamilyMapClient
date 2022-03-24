@@ -35,12 +35,15 @@ public class ServerProxy {
             reqBody.close();
 
             // RETURN REGISTER RESULT //
-            Reader resultBody = new InputStreamReader(http.getInputStream());
-            return new Gson().fromJson(resultBody, LoginResult.class);
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                Reader resultBody = new InputStreamReader(http.getInputStream());
+                LoginResult result = new Gson().fromJson(resultBody, LoginResult.class);
+                return result;
+            } else
+                return new LoginResult("Bad request");
 
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            return new LoginResult(e.getMessage());
         }
     }
     public RegisterResult register(RegisterRequest req){
@@ -62,8 +65,7 @@ public class ServerProxy {
             return new Gson().fromJson(resultBody, RegisterResult.class);
 
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            return new RegisterResult(e.getMessage());
         }
     }
 
