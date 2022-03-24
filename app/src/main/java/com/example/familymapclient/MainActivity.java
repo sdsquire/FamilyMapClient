@@ -3,6 +3,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
+
+import Models.PersonModel;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
 
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     public void userAuthenticated() {
         FragmentManager fragmentManager = this.getSupportFragmentManager();
 
+        PersonModel user = DataCache.getInstance().getCurrentUser();
+        Toast.makeText(this, "Welcome " + user.getFirstName() + " " + user.getLastName() + "!", Toast.LENGTH_SHORT).show();
         fragmentManager.beginTransaction().replace(R.id.mainActivityLayout, new MapFragment()).commit();
     }
 

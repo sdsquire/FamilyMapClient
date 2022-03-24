@@ -1,11 +1,10 @@
 package com.example.familymapclient;
-import android.widget.Toast;
-
 import com.google.gson.Gson;
-
 import java.io.*;
 import java.net.*;
-import java.net.URL;
+
+import Models.EventModel;
+import Models.PersonModel;
 import Results.*;
 import Requests.*;
 
@@ -18,32 +17,32 @@ public class ServerProxy {
         this.serverPort = serverPort;
     }
 
-    public LoginResult login(LoginRequest request) {
-        try {
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "");
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+    public String getServerHost() { return serverHost; }
+    public String getServerPort() { return serverPort; }
 
+    public LoginResult login(LoginRequest req) {
+        try {
+            // PREPARE URL //
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/login");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("POST");
             http.setDoOutput(true);
             http.connect();
 
-            String req = null;
+            // SUBMIT REGISTER REQUEST //
+            OutputStreamWriter reqBody = new OutputStreamWriter(http.getOutputStream());
+            new Gson().toJson(req, reqBody);
+            reqBody.close();
 
-            new OutputStreamWriter(http.getOutputStream()).write(req);
-            http.getOutputStream().close();
-//
-//            if (http.getResponseCode() == HttpURLConnection.HTTP_OK)
-//                System.out.println("Login Successful!");
-//
-//            else
-//                System.out.println("Login Unsuccessful");
-
-
+            // RETURN REGISTER RESULT //
+            Reader resultBody = new InputStreamReader(http.getInputStream());
+            return new Gson().fromJson(resultBody, LoginResult.class);
 
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null; }
+    }
     public RegisterResult register(RegisterRequest req){
         try {
             // PREPARE URL //
@@ -68,7 +67,50 @@ public class ServerProxy {
         }
     }
 
-    GetPersonsResult getPersons() { return null; }
+    public boolean getPersons(String authtoken) {
+        try {
+            // PREPARE URL //
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("GET");
+            http.setDoOutput(false);
+            http.addRequestProperty("Authorization", authtoken);
+            http.connect();
+            // WRITE RESULT TO DATACACHE //
+            DataCache dataCache = DataCache.getInstance();
+            Reader resultBody = new InputStreamReader(http.getInputStream());
+            GetPersonsResult result = new Gson().fromJson(resultBody, GetPersonsResult.class);
+            for (PersonModel person : result.getData())
+                dataCache.addPerson(person);
 
-    GetEventsResult getEvents() { return null; }
+            return result.isSuccess();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean getEvents(String authtoken) {
+        try {
+            // PREPARE URL //
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("GET");
+            http.setDoOutput(false);
+            http.addRequestProperty("Authorization", authtoken);
+            http.connect();
+            // WRITE RESULT TO DATACACHE //
+            DataCache dataCache = DataCache.getInstance();
+            Reader resultBody = new InputStreamReader(http.getInputStream());
+            GetEventsResult result = new Gson().fromJson(resultBody, GetEventsResult.class);
+            for (EventModel event: result.getData())
+                dataCache.addEvent(event);
+
+            return result.isSuccess();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 }
