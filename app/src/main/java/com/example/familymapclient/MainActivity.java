@@ -1,9 +1,10 @@
 package com.example.familymapclient;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import Models.PersonModel;
 
@@ -33,6 +34,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
 
         PersonModel user = DataCache.getInstance().getCurrentUser();
         Toast.makeText(this, "Welcome " + user.getFirstName() + " " + user.getLastName() + "!", Toast.LENGTH_SHORT).show();
-        fragmentManager.beginTransaction().replace(R.id.mainActivityLayout, new MapFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.mainActivityLayout, new MapsFragment()).commit();
     }
 }

@@ -3,7 +3,7 @@ package com.example.familymapclient;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 
