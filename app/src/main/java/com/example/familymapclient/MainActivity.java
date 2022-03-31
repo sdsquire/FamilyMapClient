@@ -34,6 +34,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
 
         PersonModel user = DataCache.getInstance().getCurrentUser();
         Toast.makeText(this, "Welcome " + user.getFirstName() + " " + user.getLastName() + "!", Toast.LENGTH_SHORT).show();
-        fragmentManager.beginTransaction().replace(R.id.mainActivityLayout, new MapsFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.mainActivityLayout, new MapFragment()).commit();
     }
 }

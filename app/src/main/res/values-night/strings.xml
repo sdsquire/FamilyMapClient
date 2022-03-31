@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="map_select_text">Click on a marker to see event details</string>
 </resources>
