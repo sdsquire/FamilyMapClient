@@ -17,18 +17,21 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
 import Models.EventModel;
+import Models.PersonModel;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map = null;
-    private HashSet<Marker> markers = new HashSet<>();
-    private HashMap<String, Float> colors = new HashMap<>();
+    private final HashSet<Marker> markers = new HashSet<>();
+    private final HashMap<String, Float> colors = new HashMap<>();
     private final int MAX_HUE = 360;
 
 
@@ -55,9 +58,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        DataCache FMData = DataCache.getInstance();
-        for (EventModel event : FMData.getEvents().values()) {
-            float color = 0;
+
+        this.initializeMarkers();
+        this.drawFamilyLines();
+
+        map.setOnMarkerClickListener(marker -> {
+            EventModel event = (EventModel)marker.getTag();
+            String personName = DataCache.getInstance().getPeople().get(event.getPersonID()).getFirstName();
+            Toast.makeText(this.getActivity(), personName + " - " + event.getEventType(), Toast.LENGTH_SHORT).show();
+            return true;
+        });
+    }
+
+    private void initializeMarkers() {
+        for (EventModel event : DataCache.getInstance().getEvents().values()) {
+            float color;
             if (colors.containsKey(event.getEventType()))
                 color = colors.get(event.getEventType());
             else {
@@ -70,16 +85,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     icon(BitmapDescriptorFactory.defaultMarker(color)));
             marker.setTag(event);
         }
+    }
 
-        map.setOnMarkerClickListener(marker -> {
-            EventModel event = (EventModel)marker.getTag();
-            String personName = DataCache.getInstance().getPeople().get(event.getPersonID()).getFirstName();
-            Toast.makeText(this.getActivity(), personName + " - " + event.getEventType(), Toast.LENGTH_SHORT).show();
-            return true;
-        });
+    private void drawFamilyLines() {
+        DataCache FMData = DataCache.getInstance();
+        PersonModel thisPerson = FMData.getCurrentUser();
+        EventModel thisBirth = FMData.getPersonEvents().get(thisPerson.getPersonID()).get("birth");
+        EventModel fatherBirth = FMData.getPersonEvents().get(thisPerson.getFatherID()).get("birth");
+        Polyline line = map.addPolyline(
+            new PolylineOptions()
+                .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
+                .add(new LatLng(fatherBirth.getLatitude(), fatherBirth.getLongitude()))
+                .color(0)
+                .width(10)
+        );
 
-//        LatLng sydney = new LatLng(-34, 151);
-//        googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
     }
 }

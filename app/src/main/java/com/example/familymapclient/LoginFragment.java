@@ -1,16 +1,25 @@
 package com.example.familymapclient;
 
-import android.os.*;
-import android.view.*;
-import android.widget.*;
-import androidx.fragment.app.Fragment;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
 
 import java.util.concurrent.Executors;
 
-import Requests.*;
+import Requests.LoginRequest;
+import Requests.RegisterRequest;
 
 public class LoginFragment extends Fragment {
     public interface Listener { void userAuthenticated(); }
@@ -69,16 +78,7 @@ public class LoginFragment extends Fragment {
 
         assert listener != null;
         // PREPARE HANDLER FOR UPCOMING THREADS //
-        Handler formSubmissionHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                boolean success = message.getData().getBoolean("success", false);
-                if (success)
-                    listener.userAuthenticated();
-                else
-                    Toast.makeText(LoginFragment.this.getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
-            }
-        };
+        Handler formSubmissionHandler = new formSubmissionHandler();
 
         loginButton.setOnClickListener(View -> {
             LoginRequest req = new LoginRequest(username.getText().toString(), password.getText().toString());
@@ -93,6 +93,18 @@ public class LoginFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private class formSubmissionHandler extends Handler {
+        public formSubmissionHandler() { super(Looper.getMainLooper()); }
+        @Override
+        public void handleMessage(Message message) {
+            boolean success = message.getData().getBoolean("success", false);
+            if (success)
+                listener.userAuthenticated();
+            else
+                Toast.makeText(LoginFragment.this.getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // The following functions and classes disable the login and register buttons until the proper fields have been filled out
@@ -121,5 +133,11 @@ public class LoginFragment extends Fragment {
         public void afterTextChanged(Editable s)
             { enforceValidRegister(); }
     }
+
+
+//    public void reAuthenticate(LoginRequest req) {
+//        Task task = new Task(new formSubmissionHandler(), serverHost.getText().toString(), serverPort.getText().toString(), req);
+//        Executors.newSingleThreadExecutor().submit(task);
+//    }
 
 }

@@ -57,9 +57,11 @@ public class ServerProxy {
             reqBody.close();
 
             // RETURN REGISTER RESULT //
-            Reader resultBody = new InputStreamReader(http.getInputStream());
-            return new Gson().fromJson(resultBody, RegisterResult.class);
-
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                Reader resultBody = new InputStreamReader(http.getInputStream());
+                return new Gson().fromJson(resultBody, RegisterResult.class);
+            } else
+                return new RegisterResult("Bad request");
         } catch (IOException e) {
             return new RegisterResult(e.getMessage());
         }
