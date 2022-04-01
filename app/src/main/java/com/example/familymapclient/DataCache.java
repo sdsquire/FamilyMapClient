@@ -34,4 +34,11 @@ public class DataCache {
     public HashMap<String, HashMap<String, EventModel>> getPersonEvents() { return personEvents; }
     public PersonModel getCurrentUser() {return people.get(currentUserID);}
     public LoginInfo getUserLogin() { return loginInfo; }
+
+    public EventModel getPersonEvent(String personID, String eventType) {
+        return !personEvents.containsKey(personID) ? null:
+                !personEvents.get(personID).containsKey(eventType) ? null:
+                personEvents.get(personID).get(eventType);
+
+    }
 }

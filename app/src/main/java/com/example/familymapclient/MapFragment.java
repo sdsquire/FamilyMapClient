@@ -32,7 +32,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map = null;
     private final HashSet<Marker> markers = new HashSet<>();
     private final HashMap<String, Float> colors = new HashMap<>();
+    private static final DataCache FMData = DataCache.getInstance();
     private final int MAX_HUE = 360;
+    private final int PLINE_MAX_WIDTH = 16;
 
 
     @Nullable
@@ -56,7 +58,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
 
         this.initializeMarkers();
@@ -64,19 +66,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         map.setOnMarkerClickListener(marker -> {
             EventModel event = (EventModel)marker.getTag();
-            String personName = DataCache.getInstance().getPeople().get(event.getPersonID()).getFirstName();
+            String personName = FMData.getPeople().get(event.getPersonID()).getFirstName();
             Toast.makeText(this.getActivity(), personName + " - " + event.getEventType(), Toast.LENGTH_SHORT).show();
             return true;
         });
     }
 
     private void initializeMarkers() {
-        for (EventModel event : DataCache.getInstance().getEvents().values()) {
+        for (EventModel event : FMData.getEvents().values()) {
             float color;
             if (colors.containsKey(event.getEventType()))
                 color = colors.get(event.getEventType());
             else {
-                color = new Random().nextInt(MAX_HUE);
+                color = new Random().nextInt(this.MAX_HUE);
                 colors.put(event.getEventType(), color);
             }
 
@@ -86,21 +88,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             marker.setTag(event);
         }
     }
-
     private void drawFamilyLines() {
-        DataCache FMData = DataCache.getInstance();
+        // DRAW SPOUSE LINE //
         PersonModel thisPerson = FMData.getCurrentUser();
         EventModel thisBirth = FMData.getPersonEvents().get(thisPerson.getPersonID()).get("birth");
-        EventModel fatherBirth = FMData.getPersonEvents().get(thisPerson.getFatherID()).get("birth");
+        EventModel spouseBirth = FMData.getPersonEvents().get(thisPerson.getSpouseID()).get("birth");
         Polyline line = map.addPolyline(
             new PolylineOptions()
                 .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
-                .add(new LatLng(fatherBirth.getLatitude(), fatherBirth.getLongitude()))
-                .width(16)
+                .add(new LatLng(spouseBirth.getLatitude(), spouseBirth.getLongitude()))
+                .width(this.PLINE_MAX_WIDTH)
 
         );
 
+        drawParentLines(thisPerson, 1);
+    }
+    private void drawParentLines(PersonModel thisPerson, int generation) {
+        EventModel thisBirth = FMData.getPersonEvent(thisPerson.getPersonID(), "birth");
 
-
+        String[] parentIDs = {thisPerson.getFatherID(), thisPerson.getMotherID()};
+        for (String parentID : parentIDs)
+            if (parentID != null) {
+                EventModel parentBirth = FMData.getPersonEvent(parentID, "birth");
+                Polyline line = map.addPolyline( new PolylineOptions()
+                        .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
+                        .add(new LatLng(parentBirth.getLatitude(), parentBirth.getLongitude()))
+                        .width(this.PLINE_MAX_WIDTH / generation));
+                drawParentLines(FMData.getPeople().get(parentID), generation + 1);
+            }
     }
 }
