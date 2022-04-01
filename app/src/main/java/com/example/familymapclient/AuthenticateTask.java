@@ -8,14 +8,14 @@ import Requests.LoginRequest;
 import Requests.RegisterRequest;
 import Results.Result;
 
-public class Task implements Runnable {
+public class AuthenticateTask implements Runnable {
     protected final Handler messageHandler;
     protected final ServerProxy proxy;
     private final LoginRequest loginRequest;
     private final RegisterRequest registerRequest;
     protected String authtoken;
 
-    public Task(Handler messageHandler, String serverHost, String serverPort, LoginRequest loginRequest) {
+    public AuthenticateTask(Handler messageHandler, String serverHost, String serverPort, LoginRequest loginRequest) {
         this.messageHandler = messageHandler;
         this.proxy = new ServerProxy(serverHost, serverPort);
         this.loginRequest = loginRequest;
@@ -23,7 +23,7 @@ public class Task implements Runnable {
         this.authtoken = null;
     }
 
-    public Task(Handler messageHandler, String serverHost, String serverPort, RegisterRequest registerRequest) {
+    public AuthenticateTask(Handler messageHandler, String serverHost, String serverPort, RegisterRequest registerRequest) {
         this.messageHandler = messageHandler;
         this.proxy = new ServerProxy(serverHost, serverPort);
         this.registerRequest= registerRequest;

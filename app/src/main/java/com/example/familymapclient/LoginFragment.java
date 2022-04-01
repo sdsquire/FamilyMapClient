@@ -82,13 +82,13 @@ public class LoginFragment extends Fragment {
 
         loginButton.setOnClickListener(View -> {
             LoginRequest req = new LoginRequest(username.getText().toString(), password.getText().toString());
-            Task task = new Task(formSubmissionHandler, serverHost.getText().toString(), serverPort.getText().toString(), req);
+            AuthenticateTask task = new AuthenticateTask(formSubmissionHandler, serverHost.getText().toString(), serverPort.getText().toString(), req);
             Executors.newSingleThreadExecutor().submit(task);
         });
         registerButton.setOnClickListener(View -> {
             String gender = genderChoice.getCheckedRadioButtonId() == R.id.loginGenderMale ? "m" :"f";
             RegisterRequest req = new RegisterRequest(username.getText().toString(), password.getText().toString(), email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(), gender);
-            Task task = new Task(formSubmissionHandler, serverHost.getText().toString(), serverPort.getText().toString(), req);
+            AuthenticateTask task = new AuthenticateTask(formSubmissionHandler, serverHost.getText().toString(), serverPort.getText().toString(), req);
             Executors.newSingleThreadExecutor().submit(task);
         });
 
@@ -136,7 +136,7 @@ public class LoginFragment extends Fragment {
 
 
     public void reAuthenticate(LoginInfo logInf) {
-        Task task = new Task(new formSubmissionHandler(), logInf.getServerHost(), logInf.getServerPort(), new LoginRequest(logInf.getUsername(), logInf.getPassword()));
+        AuthenticateTask task = new AuthenticateTask(new formSubmissionHandler(), logInf.getServerHost(), logInf.getServerPort(), new LoginRequest(logInf.getUsername(), logInf.getPassword()));
         Executors.newSingleThreadExecutor().submit(task);
     }
 
