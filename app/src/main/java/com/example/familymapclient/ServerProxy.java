@@ -16,6 +16,8 @@ public class ServerProxy {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
     }
+    public String getServerHost() { return serverHost; }
+    public String getServerPort() { return serverPort; }
 
     public LoginResult login(LoginRequest req) {
         try {
@@ -26,18 +28,19 @@ public class ServerProxy {
             http.setDoOutput(true);
             http.connect();
 
-            // SUBMIT REGISTER REQUEST //
+            // SUBMIT LOGIN REQUEST //
             OutputStreamWriter reqBody = new OutputStreamWriter(http.getOutputStream());
             new Gson().toJson(req, reqBody);
             reqBody.close();
 
-            // RETURN REGISTER RESULT //
+            // SAVE DATA AND RETURN LOGIN RESULT //
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                DataCache.setUserLogin(new LoginInfo(serverHost, serverPort, req.getUsername(), req.getPassword()));
+
                 Reader resultBody = new InputStreamReader(http.getInputStream());
                 return new Gson().fromJson(resultBody, LoginResult.class);
             } else
                 return new LoginResult("Bad request");
-
         } catch (IOException e) {
             return new LoginResult(e.getMessage());
         }

@@ -135,9 +135,9 @@ public class LoginFragment extends Fragment {
     }
 
 
-//    public void reAuthenticate(LoginRequest req) {
-//        Task task = new Task(new formSubmissionHandler(), serverHost.getText().toString(), serverPort.getText().toString(), req);
-//        Executors.newSingleThreadExecutor().submit(task);
-//    }
+    public void reAuthenticate(LoginInfo logInf) {
+        Task task = new Task(new formSubmissionHandler(), logInf.getServerHost(), logInf.getServerPort(), new LoginRequest(logInf.getUsername(), logInf.getPassword()));
+        Executors.newSingleThreadExecutor().submit(task);
+    }
 
 }

@@ -96,8 +96,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             new PolylineOptions()
                 .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
                 .add(new LatLng(fatherBirth.getLatitude(), fatherBirth.getLongitude()))
-                .color(0)
-                .width(10)
+                .width(16)
+
         );
 
 

@@ -1,5 +1,7 @@
 package com.example.familymapclient;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -9,19 +11,18 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.gson.Gson;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import Models.PersonModel;
-import Requests.LoginRequest;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
+
+    private static final String LOGIN_INFO_KEY = "LoginInfo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // START LOGIN FRAGMENT //
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.mainActivityLayout);
         if (fragment == null) {
@@ -29,13 +30,24 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
             ((LoginFragment) fragment).registerListener(this);
             fragmentManager.beginTransaction().add(R.id.mainActivityLayout, fragment).commit();
 
-//            // CHECK IF USER IS ALREADY LOGGED IN //
-//            LoginRequest req = checkAlreadyAuthenticated();
-//            if (req != null)
-//                ((LoginFragment) fragment).reAuthenticate(req);
+            // CHECK IF USER IS ALREADY LOGGED IN //
+            SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+            LoginInfo loginInfo = new Gson().fromJson(sharedPreferences.getString(LOGIN_INFO_KEY, null), LoginInfo.class);
+            DataCache.setUserLogin(loginInfo);
+            if (loginInfo != null)
+                ((LoginFragment) fragment).reAuthenticate(loginInfo);
+
         } else if (fragment instanceof LoginFragment)
                 ((LoginFragment) fragment).registerListener(this);
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+        String temp = new Gson().toJson(DataCache.getInstance().getUserLogin());
+        editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
+        editor.apply();
     }
 
     public void userAuthenticated() {
@@ -44,15 +56,5 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
         PersonModel user = DataCache.getInstance().getCurrentUser();
         Toast.makeText(this, "Welcome " + user.getFirstName() + " " + user.getLastName() + "!", Toast.LENGTH_SHORT).show();
         fragmentManager.beginTransaction().replace(R.id.mainActivityLayout, new MapFragment()).commit();
-    }
-
-    private LoginRequest checkAlreadyAuthenticated() {
-        try {
-            FileReader reader = new FileReader("currentUser.txt");
-            LoginRequest req = new Gson().fromJson(reader, LoginRequest.class);
-            return (req.getUsername() != null && req.getPassword() != null) ? req : null;
-        } catch (FileNotFoundException e) {
-            return null;
-        }
     }
 }
