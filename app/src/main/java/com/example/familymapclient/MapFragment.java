@@ -4,7 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Random;
 
 import Models.EventModel;
@@ -31,6 +33,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map = null;
     private final HashSet<Marker> markers = new HashSet<>();
+    private final HashSet<Polyline> lines = new HashSet<>();
     private final HashMap<String, Float> colors = new HashMap<>();
     private static final DataCache FMData = DataCache.getInstance();
     private final int MAX_HUE = 360;
@@ -64,10 +67,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.initializeMarkers();
         this.drawFamilyLines();
 
-        map.setOnMarkerClickListener(marker -> {
+        map.setOnMarkerClickListener(marker -> { //Formats description text and changes gender icon
             EventModel event = (EventModel)marker.getTag();
-            String personName = FMData.getPeople().get(event.getPersonID()).getFirstName();
-            Toast.makeText(this.getActivity(), personName + " - " + event.getEventType(), Toast.LENGTH_SHORT).show();
+            assert event != null;
+            PersonModel person = FMData.getPeople().get(event.getPersonID());
+            assert person != null;
+            String outputText = getResources().getString(R.string.marker_selected_text, person.getFirstName(), person.getLastName(),
+                                                event.getEventType().toUpperCase(Locale.ROOT), event.getCity(), event.getCountry(), event.getYear());
+            ((TextView) requireView().findViewById(R.id.map_label_text)).setText(outputText);
+            ((ImageView) requireView().findViewById(R.id.genderIcon)).setImageResource(person.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
+
             return true;
         });
     }
@@ -113,8 +122,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Polyline line = map.addPolyline( new PolylineOptions()
                         .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
                         .add(new LatLng(parentBirth.getLatitude(), parentBirth.getLongitude()))
-                        .width(this.PLINE_MAX_WIDTH / generation));
+                        .width((float)this.PLINE_MAX_WIDTH / generation));
                 drawParentLines(FMData.getPeople().get(parentID), generation + 1);
+                lines.add(line);
             }
     }
 }
