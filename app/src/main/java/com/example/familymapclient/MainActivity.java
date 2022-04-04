@@ -3,6 +3,7 @@ package com.example.familymapclient;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,9 +46,20 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     protected void onStop() {
         super.onStop();
         SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-        String temp = new Gson().toJson(DataCache.getInstance().getUserLogin());
         editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
         editor.apply();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_menu, menu);
+
+//        MenuItem personMenuItem = menu.findItem(R.id.personMenuItem);
+//        personMenuItem.setIcon(new IconDrawable(this, FontAwesomeIcons.fa_user)
+//                .colorRes(R.color.colorWhite)
+//                .actionBarSize());
+
+        return true;
     }
 
     public void userAuthenticated() {

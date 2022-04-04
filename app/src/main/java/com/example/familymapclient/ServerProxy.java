@@ -1,12 +1,22 @@
 package com.example.familymapclient;
+
 import com.google.gson.Gson;
-import java.io.*;
-import java.net.*;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import Models.EventModel;
 import Models.PersonModel;
-import Results.*;
-import Requests.*;
+import Requests.LoginRequest;
+import Requests.RegisterRequest;
+import Results.GetEventsResult;
+import Results.GetPersonsResult;
+import Results.LoginResult;
+import Results.RegisterResult;
 
 public class ServerProxy {
     private final String serverHost;
