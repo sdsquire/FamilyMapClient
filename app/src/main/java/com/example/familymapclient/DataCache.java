@@ -37,8 +37,8 @@ public class DataCache {
 
     public EventModel getPersonEvent(String personID, String eventType) {
         return !personEvents.containsKey(personID) ? null:
-                !personEvents.get(personID).containsKey(eventType) ? null:
-                personEvents.get(personID).get(eventType);
+                !Objects.requireNonNull(personEvents.get(personID)).containsKey(eventType) ? null:
+                Objects.requireNonNull(personEvents.get(personID)).get(eventType);
 
     }
 }

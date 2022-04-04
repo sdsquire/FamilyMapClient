@@ -1,8 +1,10 @@
-package com.example.familymapclient;
+package com.example.familymapclient.Activities;
 
 import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.example.familymapclient.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

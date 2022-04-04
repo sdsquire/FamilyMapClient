@@ -1,4 +1,4 @@
-package com.example.familymapclient;
+package com.example.familymapclient.Activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.familymapclient.DataCache;
+import com.example.familymapclient.LoginInfo;
+import com.example.familymapclient.R;
 import com.google.gson.Gson;
 
 import Models.PersonModel;

@@ -1,4 +1,4 @@
-package com.example.familymapclient;
+package com.example.familymapclient.Activities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.familymapclient.DataCache;
+import com.example.familymapclient.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -79,6 +81,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             return true;
         });
+
+
+
     }
 
     private void initializeMarkers() {
@@ -94,6 +99,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Marker marker = map.addMarker(new MarkerOptions().
                     position(new LatLng(event.getLatitude(), event.getLongitude())).
                     icon(BitmapDescriptorFactory.defaultMarker(color)));
+            assert marker != null;
             marker.setTag(event);
         }
     }
@@ -102,6 +108,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         PersonModel thisPerson = FMData.getCurrentUser();
         EventModel thisBirth = FMData.getPersonEvents().get(thisPerson.getPersonID()).get("birth");
         EventModel spouseBirth = FMData.getPersonEvents().get(thisPerson.getSpouseID()).get("birth");
+        assert thisBirth != null;
+        assert spouseBirth != null;
         Polyline line = map.addPolyline(
             new PolylineOptions()
                 .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
