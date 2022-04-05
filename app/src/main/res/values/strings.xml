@@ -34,4 +34,29 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="no_name">NO NAME</string>
+    <string name="settingsLifeStoryLabel">Life Story Lines</string>
+    <string name="settingsLifeStoryDesc">SHOW LIFE STORY LINES</string>
+    <string name="settingsFamilyTreeLabel">Family Tree Lines</string>
+    <string name="settingsFamilyTreeDesc">SHOW FAMILY TREE LINES</string>
+    <string name="settingsSpouseLabel">Spouse Lines</string>
+    <string name="settingsSpouseDesc">SHOW SPOUSE LINES</string>
+    <string name="settingsFatherLabel">Father\'s side</string>
+    <string name="settingsFatherDesc">FILTER BY FATHER\'S SIDE OF FAMILY</string>
+    <string name="settingsMotherLabel">Mother\'s Side</string>
+    <string name="settingsMotherDesc">FILTER BY MOTHER\'S SIDE OF FAMILY</string>
+    <string name="settingsMaleLabel">Male Events</string>
+    <string name="settingsFemaleLabel">Female Events</string>
+    <string name="settingsGenderDesc">FILTER EVENTS BASED ON GENDER</string>
+    <string name="settingsLogoutLabel">Logout</string>
+    <string name="settingsLogoutDesc">RETURN TO LOGIN SCREEN</string>
+    <string name="title_activity_person">PersonActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

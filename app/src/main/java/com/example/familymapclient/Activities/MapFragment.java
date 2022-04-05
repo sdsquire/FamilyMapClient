@@ -1,7 +1,11 @@
 package com.example.familymapclient.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,6 +51,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
@@ -60,6 +65,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         colors.put("marriage", BitmapDescriptorFactory.HUE_YELLOW);
         if (map != null)
             map.getMapAsync(this);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.map_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -78,14 +94,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                 event.getEventType().toUpperCase(Locale.ROOT), event.getCity(), event.getCountry(), event.getYear());
             ((TextView) requireView().findViewById(R.id.mapLabelText)).setText(outputText);
             ((ImageView) requireView().findViewById(R.id.genderIcon)).setImageResource(person.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
+            requireView().findViewById(R.id.eventDescriptor).setEnabled(true);
 
             return true;
         });
 
-        requireView().findViewById(R.id.eventDescriptor).setOnClickListener( View ->
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.mainActivityLayout, new PersonFragment()).commit()
+        View eventDescriptor = requireView().findViewById(R.id.eventDescriptor);
+        eventDescriptor.setOnClickListener( View -> {
+            Intent intent = new Intent(getActivity(), PersonActivity.class);
+            startActivity(intent);
+                }
+//                requireActivity().getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.mainActivityLayout, new PersonFragment()).commit()
         );
+        eventDescriptor.setEnabled(false);
 
     }
 
