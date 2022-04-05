@@ -11,18 +11,13 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/personActFirstName"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:text="NO NAME" />
+                android:text="@string/no_name" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,12 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -45,7 +34,7 @@
                 android:id="@+id/personActLastName"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:text="NO NAME" />
+                android:text="@string/no_name" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -55,11 +44,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,7 +51,7 @@
                 android:id="@+id/personActGender"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:text="NO NAME" />
+                android:text="@string/no_name" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,8 +62,5 @@
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
         </LinearLayout>
-
-
-    </LinearLayout>
 
 </FrameLayout>
