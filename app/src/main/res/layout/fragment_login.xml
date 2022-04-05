@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/loginServerHostField"
-                android:text="@string/loginLabel0"/>
+                android:text="@string/serverHostLabel"/>
 
             <EditText
                 android:id="@+id/loginServerHostField"
@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/loginServerPortField"
-                android:text="@string/loginLabel1"/>
+                android:text="@string/serverPortLabel"/>
 
             <EditText
                 android:id="@+id/loginServerPortField"
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/loginUsernameField"
-                android:text="@string/loginLabel2"/>
+                android:text="@string/usernameLabel"/>
 
             <EditText
                 android:id="@+id/loginUsernameField"
@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/loginPasswordField"
-                android:text="@string/loginLabel3"/>
+                android:text="@string/passwordLabel"/>
 
             <EditText
                 android:id="@+id/loginPasswordField"
@@ -112,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/loginFirstNameField"
-                android:text="@string/loginLabel4"/>
+                android:text="@string/firstNameLabel"/>
 
             <EditText
                 android:id="@+id/loginFirstNameField"
@@ -134,7 +134,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/loginLastNameField"
-                android:text="@string/loginLabel5"/>
+                android:text="@string/lastNameLabel"/>
 
             <EditText
                 android:id="@+id/loginLastNameField"
@@ -156,7 +156,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/loginEmailField"
-                android:text="@string/loginLabel6"/>
+                android:text="@string/emailLabel"/>
 
             <EditText
                 android:id="@+id/loginEmailField"
@@ -177,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="end|center_vertical"
-                android:text="@string/loginLabel7" />
+                android:text="@string/genderLabel" />
 
             <RadioGroup
                 android:id="@+id/loginGenderButtons"
@@ -191,14 +191,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="@string/gender1" />
+                    android:text="@string/genderMaleLabel" />
 
                 <RadioButton
                     android:id="@+id/loginGenderFemale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="@string/gender0"/>
+                    android:text="@string/genderFemaleLabel"/>
 
             </RadioGroup>
         </LinearLayout>

@@ -12,9 +12,10 @@
         android:layout_height="0dp"
         android:layout_gravity="top"
         android:layout_weight="5"
-        tools:context=".MapFragment" />
+        tools:context=".Activities.MapFragment" />
 
     <LinearLayout
+        android:id="@+id/eventDescriptor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -29,7 +30,7 @@
             android:padding="5dp"/>
 
         <TextView
-            android:id="@+id/map_label_text"
+            android:id="@+id/mapLabelText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"

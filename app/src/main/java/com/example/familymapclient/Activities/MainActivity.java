@@ -56,12 +56,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.map_menu, menu);
-
-//        MenuItem personMenuItem = menu.findItem(R.id.personMenuItem);
-//        personMenuItem.setIcon(new IconDrawable(this, FontAwesomeIcons.fa_user)
-//                .colorRes(R.color.colorWhite)
-//                .actionBarSize());
-
         return true;
     }
 

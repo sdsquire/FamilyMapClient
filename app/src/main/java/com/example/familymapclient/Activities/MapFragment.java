@@ -76,13 +76,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             assert person != null;
             String outputText = getResources().getString(R.string.marker_selected_text, person.getFirstName(), person.getLastName(),
                                                 event.getEventType().toUpperCase(Locale.ROOT), event.getCity(), event.getCountry(), event.getYear());
-            ((TextView) requireView().findViewById(R.id.map_label_text)).setText(outputText);
+            ((TextView) requireView().findViewById(R.id.mapLabelText)).setText(outputText);
             ((ImageView) requireView().findViewById(R.id.genderIcon)).setImageResource(person.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
 
             return true;
         });
 
-
+        requireView().findViewById(R.id.eventDescriptor).setOnClickListener( View ->
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainActivityLayout, new PersonFragment()).commit()
+        );
 
     }
 
