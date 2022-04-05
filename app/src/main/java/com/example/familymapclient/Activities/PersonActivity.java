@@ -1,6 +1,5 @@
 package com.example.familymapclient.Activities;
 
-
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.familymapclient.R;
 
 public class PersonActivity extends AppCompatActivity {
+    public final static String PERSON_KEY = "currPerson";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

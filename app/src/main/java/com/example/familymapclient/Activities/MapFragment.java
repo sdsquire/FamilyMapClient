@@ -102,10 +102,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View eventDescriptor = requireView().findViewById(R.id.eventDescriptor);
         eventDescriptor.setOnClickListener( View -> {
             Intent intent = new Intent(getActivity(), PersonActivity.class);
+//            intent.putExtra(PersonActivity.PERSON_KEY, )
             startActivity(intent);
+
                 }
-//                requireActivity().getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.mainActivityLayout, new PersonFragment()).commit()
         );
         eventDescriptor.setEnabled(false);
 
