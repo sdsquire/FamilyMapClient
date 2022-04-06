@@ -15,11 +15,8 @@ import com.example.familymapclient.DataCache;
 import com.example.familymapclient.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Objects;
 
 import Models.EventModel;
 import Models.PersonModel;
@@ -44,10 +41,12 @@ public class PersonActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.personActGender)).setText(currPerson.getGender().equals("m") ? "Male" : "Female");
 
         // FILL EVENT AND PERSON DATA TO PASS TO EXPANDABLE LIST //
-        ArrayList<EventModel> eventList = new ArrayList<>(Objects.requireNonNull(FMData.getPersonEvents().get(currPerson.getPersonID())).values());
-        Collections.sort(eventList, new Comparator<EventModel>() {
-            public int compare(EventModel e1, EventModel e2){ return e1.getYear() - e2.getYear(); }
-        });
+        ArrayList<EventModel> eventList = FMData.getPersonEvents().get(currPerson.getPersonID());
+
+//                new ArrayList<>(Objects.requireNonNull(FMData.getPersonEvents().get(currPerson.getPersonID())).values());
+//        Collections.sort(eventList, new Comparator<EventModel>() {
+//            public int compare(EventModel e1, EventModel e2){ return e1.getYear() - e2.getYear(); }
+//        });
 
         ArrayList<PersonModel> familyList = new ArrayList<>();
         if (currPerson.getFatherID() != null) {

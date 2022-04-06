@@ -47,7 +47,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private final int PLINE_MAX_WIDTH = 16;
 
 
-    /** Initializes the first event according to an eventID argument if exists; else to the birth of the current user.
+    /** Initializes the first event according to an eventID argument if exists; else to the first event (birth) of the current user.
      * @param inflater Inflates the design of the fragment.
      * @param container The container used to inflate the design of the fragment.
      * @param savedInstanceState A bundle in which the eventID argument is stored.
@@ -60,7 +60,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              @Nullable Bundle savedInstanceState) {
         String currEventID = getArguments() != null ? getArguments().getString(EVENT_KEY, null) : null;
         if (currEventID == null)
-            currEventID = FMData.getPersonEvent(FMData.getCurrentUser().getPersonID(),"birth").getEventID();
+            currEventID = FMData.getPersonEvents(FMData.getCurrentUser().getPersonID()).get(0).getEventID();
+//            currEventID = FMData.getPersonEvent(FMData.getCurrentUser().getPersonID(),"birth").getEventID();
         currEvent = FMData.getEvent(currEventID);
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_map, container, false);
@@ -138,8 +139,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void drawFamilyLines() {
         // DRAW SPOUSE LINE //
         PersonModel thisPerson = FMData.getPerson(currEvent.getPersonID());
-        EventModel thisBirth = FMData.getPersonEvents().get(thisPerson.getPersonID()).get("birth");
-        EventModel spouseBirth = FMData.getPersonEvents().get(thisPerson.getSpouseID()).get("birth");
+        EventModel thisBirth = FMData.getPersonEvents().get(thisPerson.getPersonID()).get(0);
+        EventModel spouseBirth = FMData.getPersonEvents().get(thisPerson.getSpouseID()).get(0);
         assert thisBirth != null;
         assert spouseBirth != null;
         Polyline line = map.addPolyline(
@@ -157,12 +158,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      * @param generation The number of generations back from the original person; thickness of lines are inversely determined by this parameter;
      */
     private void drawParentLines(PersonModel thisPerson, int generation) {
-        EventModel thisBirth = FMData.getPersonEvent(thisPerson.getPersonID(), "birth");
+        EventModel thisBirth = FMData.getPersonEvents(thisPerson.getPersonID()).get(0);
 
         String[] parentIDs = {thisPerson.getFatherID(), thisPerson.getMotherID()};
         for (String parentID : parentIDs)
             if (parentID != null) {
-                EventModel parentBirth = FMData.getPersonEvent(parentID, "birth");
+                EventModel parentBirth = FMData.getPersonEvents(parentID).get(0);
                 Polyline line = map.addPolyline( new PolylineOptions()
                         .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
                         .add(new LatLng(parentBirth.getLatitude(), parentBirth.getLongitude()))
