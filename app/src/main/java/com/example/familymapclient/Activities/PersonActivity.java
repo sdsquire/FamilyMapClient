@@ -8,7 +8,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +15,8 @@ import com.example.familymapclient.DataCache;
 import com.example.familymapclient.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
@@ -25,21 +26,27 @@ import Models.PersonModel;
 
 public class PersonActivity extends AppCompatActivity {
     public final static String PERSON_KEY = "currPerson";
-
     private final HashMap<String, String> relationshipIDs = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // INITIALIZE VIEWS //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
+        ExpandableListView connections = findViewById(R.id.connectedItems);
 
-        ExpandableListView events = findViewById(R.id.expListEvents);
-
-        Intent intent = getIntent();
-        String personID = intent.getStringExtra(PERSON_KEY);
-        PersonModel currPerson = DataCache.getPerson(personID);
+        // GET PERSON AND FILL OUT BASIC INFO //
+        PersonModel currPerson = DataCache.getPerson(getIntent().getStringExtra(PERSON_KEY));
         assert currPerson != null;
+        ((TextView) findViewById(R.id.personActFirstName)).setText(currPerson.getFirstName());
+        ((TextView) findViewById(R.id.personActLastName)).setText(currPerson.getLastName());
+        ((TextView) findViewById(R.id.personActGender)).setText(currPerson.getGender().equals("m") ? "Male" : "Female");
+
+        // FILL EVENT AND PERSON DATA TO PASS TO EXPANDABLE LIST //
         ArrayList<EventModel> eventList = new ArrayList<>(Objects.requireNonNull(DataCache.getInstance().getPersonEvents().get(currPerson.getPersonID())).values());
+        Collections.sort(eventList, new Comparator<EventModel>() {
+            public int compare(EventModel e1, EventModel e2){ return e1.getYear() - e2.getYear(); }
+        });
 
         ArrayList<PersonModel> familyList = new ArrayList<>();
         if (currPerson.getFatherID() != null) {
@@ -54,45 +61,48 @@ public class PersonActivity extends AppCompatActivity {
             familyList.add(DataCache.getPerson(currPerson.getSpouseID()));
             relationshipIDs.put(currPerson.getSpouseID(), "Spouse");
         }
-
-        ArrayList<PersonModel> children = DataCache.getInstance().getChildren(currPerson.getPersonID());
         for (PersonModel child : DataCache.getInstance().getChildren(currPerson.getPersonID())) {
             familyList.add(child);
             relationshipIDs.put(child.getPersonID(), "Child");
         }
 
-         events.setAdapter(new PersonActivityAdapter(eventList, familyList));
+        // CREATE EXPANDABLE LIST //
+         connections.setAdapter(new PersonActivityAdapter(eventList, familyList));
     }
 
+    /** Interfaces between the data and the Expandable List. */
     private class PersonActivityAdapter extends BaseExpandableListAdapter {
+        /** Indicator for the event group. */
         private static final int EVENT_GROUP_POSITION = 0;
+        /** Indicator for the person group. */
         private static final int PERSON_GROUP_POSITION = 1;
+        /** List of events to display. */
         private final ArrayList<EventModel> events;
+        /** List of people to display. */
         private final ArrayList<PersonModel> people;
-
         PersonActivityAdapter( ArrayList<EventModel> events, ArrayList<PersonModel> people){
-
             this.events = events;
             this.people = people;
         }
 
+        /** @return The number of distinct groups to display. */
         @Override
         public int getGroupCount() {return 2;}
-
+        /** @return The number of children in a specified group. */
         @Override
         public int getChildrenCount(int groupPosition) {
             return groupPosition == EVENT_GROUP_POSITION ? events.size() :
                     groupPosition == PERSON_GROUP_POSITION ? people.size() :
                     -999;
         }
-
+        /** @return The specified group. */
         @Override
         public Object getGroup(int groupPosition) {
             return groupPosition == EVENT_GROUP_POSITION ? getString(R.string.lifeEventsTitle) :
                     groupPosition == PERSON_GROUP_POSITION ? getString(R.string.familyTitle) :
                     null;
         }
-
+        /** @return The specified item in the specified group. */
         @Override
         public Object getChild(int groupPosition, int childPosition) {
             return groupPosition == EVENT_GROUP_POSITION ? events.get(childPosition) :
@@ -100,13 +110,13 @@ public class PersonActivity extends AppCompatActivity {
                     null;
         }
 
-        @Override
-        public long getGroupId(int groupPosition) {return groupPosition;}
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {return childPosition;}
-        @Override
-        public boolean hasStableIds() {return false;}
-
+        /** Initializes the view if it does not exist; initializes basic information values.
+         * @param groupPosition The id of the targeted group.
+         * @param isExpanded Used only in superclass.
+         * @param convertView The view when all the items are grouped under the title.
+         * @param parent The parent ViewGroup.
+         * @return The Initialized convertView.
+         */
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             if (convertView == null)
@@ -120,8 +130,17 @@ public class PersonActivity extends AppCompatActivity {
             return convertView;
         }
 
+        /** Inflates the
+         * @param groupPosition The id of the targeted group.
+         * @param childPosition The position of the targeted child.
+         * @param isLastChild Used only in superclass.
+         * @param convertView Used only in superclass.
+         * @param parent The parent ViewGroup.
+         * @return The view of the target item.
+         */
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+            // INFLATE VIEW AND INITIALIZE VARIABLES //
             View itemView = getLayoutInflater().inflate(R.layout.list_item, parent, false);
 
             TextView dataText =  itemView.findViewById(R.id.listItemData);
@@ -129,6 +148,7 @@ public class PersonActivity extends AppCompatActivity {
             ImageView icon = itemView.findViewById(R.id.textIcon);
             PersonModel currPerson;
 
+            // FORMAT TEXT AND SET IMAGE ICON //
             switch (groupPosition) {
                 case EVENT_GROUP_POSITION:
                     EventModel currEvent = events.get(childPosition);
@@ -141,17 +161,29 @@ public class PersonActivity extends AppCompatActivity {
                     currPerson = people.get(childPosition);
                     dataText.setText(getString(R.string.personName, currPerson.getFirstName(), currPerson.getLastName()));
                     descriptionText.setText(relationshipIDs.get(currPerson.getPersonID()));
+                    icon.setImageResource(currPerson.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
+                    itemView.setOnClickListener(View -> {
+                        Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
+                        intent.putExtra(PERSON_KEY, currPerson.getPersonID());
+                        startActivity(intent);
+                    });
                     break;
                 default:
                     throw new IllegalArgumentException("Unrecognized group position: " + groupPosition);
             }
 
-            itemView.setOnClickListener(View ->
-                    Toast.makeText(PersonActivity.this, descriptionText.getText(), Toast.LENGTH_SHORT).show());
+            // OPEN NEW PERSON ACTIVITY WHEN CLICKED //
 
             return itemView;
         }
 
+        @Override
+        public long getGroupId(int groupPosition) {return groupPosition;}
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {return childPosition;}
+        @Override
+        public boolean hasStableIds() {return false;}
+        @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {return true;}
 
     }
