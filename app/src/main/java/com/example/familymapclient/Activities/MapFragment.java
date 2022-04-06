@@ -38,6 +38,7 @@ import Models.PersonModel;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map = null;
+    private EventModel currEvent = null;
     private final HashSet<Marker> markers = new HashSet<>();
     private final HashSet<Polyline> lines = new HashSet<>();
     private final HashMap<String, Float> colors = new HashMap<>();
@@ -86,23 +87,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.drawFamilyLines();
 
         map.setOnMarkerClickListener(marker -> { //Formats description text and changes gender icon
-            EventModel event = (EventModel)marker.getTag();
-            assert event != null;
-            PersonModel person = FMData.getPeople().get(event.getPersonID());
+            currEvent = (EventModel)marker.getTag();
+            PersonModel person = FMData.getPeople().get(currEvent.getPersonID());
             assert person != null;
-            String outputText = getResources().getString(R.string.marker_selected_text, person.getFirstName(), person.getLastName(),
-                                                event.getEventType().toUpperCase(Locale.ROOT), event.getCity(), event.getCountry(), event.getYear());
+            String outputText = getResources().getString(R.string.event_selected_text, person.getFirstName(), person.getLastName(),
+                                                currEvent.getEventType().toUpperCase(Locale.ROOT), currEvent.getCity(), currEvent.getCountry(), currEvent.getYear());
             ((TextView) requireView().findViewById(R.id.mapLabelText)).setText(outputText);
             ((ImageView) requireView().findViewById(R.id.genderIcon)).setImageResource(person.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
             requireView().findViewById(R.id.eventDescriptor).setEnabled(true);
-
             return true;
         });
 
         View eventDescriptor = requireView().findViewById(R.id.eventDescriptor);
         eventDescriptor.setOnClickListener( View -> {
             Intent intent = new Intent(getActivity(), PersonActivity.class);
-//            intent.putExtra(PersonActivity.PERSON_KEY, )
+            intent.putExtra(PersonActivity.PERSON_KEY, currEvent.getPersonID());
             startActivity(intent);
 
                 }

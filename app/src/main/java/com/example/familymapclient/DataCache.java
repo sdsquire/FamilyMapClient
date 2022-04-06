@@ -1,5 +1,6 @@
 package com.example.familymapclient;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -30,11 +31,20 @@ public class DataCache {
     public static void setUserLogin(LoginInfo LogInf) {instance.loginInfo = LogInf;}
 
     public HashMap<String, PersonModel> getPeople() { return people; }
+    public static PersonModel getPerson(String personID) {return !instance.people.containsKey(personID) ? instance.people.get(personID) : null;}
     public HashMap<String, EventModel> getEvents() { return events; }
     public HashMap<String, HashMap<String, EventModel>> getPersonEvents() { return personEvents; }
     public PersonModel getCurrentUser() {return people.get(currentUserID);}
     public LoginInfo getUserLogin() { return loginInfo; }
 
+    // More advanced get functions
+    public ArrayList<PersonModel> getChildren(String personID) {
+        ArrayList<PersonModel> children = new ArrayList<>();
+        for (PersonModel person : people.values())
+            if (person.getMotherID().equals(personID) || person.getFatherID().equals(personID))
+                children.add(person);
+        return children;
+    }
     public EventModel getPersonEvent(String personID, String eventType) {
         return !personEvents.containsKey(personID) ? null:
                 !Objects.requireNonNull(personEvents.get(personID)).containsKey(eventType) ? null:

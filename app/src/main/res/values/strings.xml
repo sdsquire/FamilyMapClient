@@ -1,9 +1,10 @@
 <resources>
+<!--    GENERAL STRINGS-->
     <string name="no_name">NO NAME</string>
     <string name="no_title">NO TITLE</string>
 
-    <string name="app_name">FamilyMapClient</string>
-    <string name="serverHostLabel">Server Host:</string>
+<!--    LOGIN FRAGMENT-->
+    <string name="app_name">FamilyMapClient</string> <string name="serverHostLabel">Server Host:</string>
     <string name="serverPortLabel">Server Port:</string>
     <string name="usernameLabel">Username:</string>
     <string name="passwordLabel">Password:</string>
@@ -17,11 +18,13 @@
     <string name="registerButton">REGISTER</string>
     <string name="welcome_text">Welcome %s %s!</string>
 
+<!--    MAP FRAGMENT-->
     <string name="search_menu">Search</string>
     <string name="settings_menu">Settings</string>
     <string name="map_select_text">Click on a marker to see event details</string>
-    <string name="marker_selected_text">%1$s %2$s\n%3$s: %4$s, %5$s (%6$d)</string>
+    <string name="event_selected_text">%1$s %2$s\n%3$s: %4$s, %5$s (%6$d)</string>
 
+<!--    SETTINGS ACTIVITY-->
     <string name="settingsLifeStoryLabel">Life Story Lines</string>
     <string name="settingsLifeStoryDesc">SHOW LIFE STORY LINES</string>
     <string name="settingsFamilyTreeLabel">Family Tree Lines</string>
@@ -37,8 +40,13 @@
     <string name="settingsGenderDesc">FILTER EVENTS BASED ON GENDER</string>
     <string name="settingsLogoutLabel">Logout</string>
     <string name="settingsLogoutDesc">RETURN TO LOGIN SCREEN</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+<!--    PERSON / EVENT ACTIVITIES-->
+    <string name="lifeEventsTitle">LIFE EVENTS</string>
+    <string name="familyTitle">FAMILY</string>
+    <string name="lifeEventsData">%s: %s, %s (%d)</string>
+    <string name="personName">%s: %s</string>
+<!--    <string name="hello_blank_fragment">Hello blank fragment</string>-->
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>

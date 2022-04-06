@@ -26,23 +26,23 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/eventItemDesc"
+            android:id="@+id/listItemData"
             android:text="@string/no_title"
             android:gravity="start"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/eventItemPerson"
+            android:id="@+id/listItemDesc"
             android:text="@string/no_name"
             android:gravity="start"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:layout_below="@id/mapPinIcon"/>
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@android:color/darker_gray"-->
+<!--        android:layout_below="@id/mapPinIcon"/>-->
 
 </RelativeLayout>
