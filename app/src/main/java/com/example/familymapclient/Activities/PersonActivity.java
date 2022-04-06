@@ -1,10 +1,12 @@
 package com.example.familymapclient.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +35,9 @@ public class PersonActivity extends AppCompatActivity {
 
         ExpandableListView events = findViewById(R.id.expListEvents);
 
-        PersonModel currPerson = DataCache.getPerson(getIntent().getStringExtra(PERSON_KEY));
+        Intent intent = getIntent();
+        String personID = intent.getStringExtra(PERSON_KEY);
+        PersonModel currPerson = DataCache.getPerson(personID);
         assert currPerson != null;
         ArrayList<EventModel> eventList = new ArrayList<>(Objects.requireNonNull(DataCache.getInstance().getPersonEvents().get(currPerson.getPersonID())).values());
 
@@ -50,6 +54,8 @@ public class PersonActivity extends AppCompatActivity {
             familyList.add(DataCache.getPerson(currPerson.getSpouseID()));
             relationshipIDs.put(currPerson.getSpouseID(), "Spouse");
         }
+
+        ArrayList<PersonModel> children = DataCache.getInstance().getChildren(currPerson.getPersonID());
         for (PersonModel child : DataCache.getInstance().getChildren(currPerson.getPersonID())) {
             familyList.add(child);
             relationshipIDs.put(child.getPersonID(), "Child");
@@ -61,12 +67,13 @@ public class PersonActivity extends AppCompatActivity {
     private class PersonActivityAdapter extends BaseExpandableListAdapter {
         private static final int EVENT_GROUP_POSITION = 0;
         private static final int PERSON_GROUP_POSITION = 1;
-        private final EventModel[] events;
-        private final PersonModel[] people;
+        private final ArrayList<EventModel> events;
+        private final ArrayList<PersonModel> people;
 
         PersonActivityAdapter( ArrayList<EventModel> events, ArrayList<PersonModel> people){
-            this.events = (EventModel[]) events.toArray();
-            this.people = (PersonModel[])people.toArray();
+
+            this.events = events;
+            this.people = people;
         }
 
         @Override
@@ -74,8 +81,8 @@ public class PersonActivity extends AppCompatActivity {
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            return groupPosition == EVENT_GROUP_POSITION ? events.length :
-                    groupPosition == PERSON_GROUP_POSITION ? people.length :
+            return groupPosition == EVENT_GROUP_POSITION ? events.size() :
+                    groupPosition == PERSON_GROUP_POSITION ? people.size() :
                     -999;
         }
 
@@ -88,8 +95,8 @@ public class PersonActivity extends AppCompatActivity {
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            return groupPosition == EVENT_GROUP_POSITION ? events[childPosition] :
-                    groupPosition == PERSON_GROUP_POSITION ? people[childPosition] :
+            return groupPosition == EVENT_GROUP_POSITION ? events.get(childPosition) :
+                    groupPosition == PERSON_GROUP_POSITION ? people.get(childPosition) :
                     null;
         }
 
@@ -103,14 +110,12 @@ public class PersonActivity extends AppCompatActivity {
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             if (convertView == null)
-                convertView = getLayoutInflater().inflate(R.layout.list_item, parent, false);
+                convertView = getLayoutInflater().inflate(R.layout.exp_list_title, parent, false);
 
             TextView titleView = convertView.findViewById(R.id.listTitle);
-            titleView.setText(
-                    groupPosition == EVENT_GROUP_POSITION ? R.string.lifeEventsTitle :
-                    groupPosition == PERSON_GROUP_POSITION ? R.string.familyTitle :
-                    R.string.no_title
-            );
+            titleView.setText(groupPosition == EVENT_GROUP_POSITION ? R.string.lifeEventsTitle :
+                                groupPosition == PERSON_GROUP_POSITION ? R.string.familyTitle :
+                                R.string.no_title);
 
             return convertView;
         }
@@ -121,18 +126,19 @@ public class PersonActivity extends AppCompatActivity {
 
             TextView dataText =  itemView.findViewById(R.id.listItemData);
             TextView descriptionText = itemView.findViewById(R.id.listItemDesc);
+            ImageView icon = itemView.findViewById(R.id.textIcon);
             PersonModel currPerson;
 
             switch (groupPosition) {
                 case EVENT_GROUP_POSITION:
-                    EventModel currEvent = events[childPosition];
+                    EventModel currEvent = events.get(childPosition);
                     dataText.setText(getString(R.string.lifeEventsData, currEvent.getEventType().toUpperCase(Locale.ROOT), currEvent.getCity(), currEvent.getCountry(), currEvent.getYear()));
                     currPerson = DataCache.getPerson(currEvent.getPersonID());
                     assert currPerson != null;
                     descriptionText.setText(getString(R.string.personName, currPerson.getFirstName(), currPerson.getLastName()));
                     break;
                 case PERSON_GROUP_POSITION:
-                    currPerson = people[childPosition];
+                    currPerson = people.get(childPosition);
                     dataText.setText(getString(R.string.personName, currPerson.getFirstName(), currPerson.getLastName()));
                     descriptionText.setText(relationshipIDs.get(currPerson.getPersonID()));
                     break;

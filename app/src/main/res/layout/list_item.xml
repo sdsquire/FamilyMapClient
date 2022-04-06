@@ -6,7 +6,7 @@
 
 
     <ImageView
-        android:id="@+id/mapPinIcon"
+        android:id="@+id/textIcon"
         android:src="@drawable/map_pin"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -21,7 +21,7 @@
         android:orientation="vertical"
         android:layout_centerVertical="true"
         android:layout_margin="16dp"
-        android:layout_toEndOf="@id/mapPinIcon" >
+        android:layout_toEndOf="@id/textIcon" >
 
         <TextView
             android:layout_width="wrap_content"

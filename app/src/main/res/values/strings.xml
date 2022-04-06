@@ -45,7 +45,7 @@
     <string name="lifeEventsTitle">LIFE EVENTS</string>
     <string name="familyTitle">FAMILY</string>
     <string name="lifeEventsData">%s: %s, %s (%d)</string>
-    <string name="personName">%s: %s</string>
+    <string name="personName">%s %s</string>
 <!--    <string name="hello_blank_fragment">Hello blank fragment</string>-->
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

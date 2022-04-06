@@ -31,7 +31,7 @@ public class DataCache {
     public static void setUserLogin(LoginInfo LogInf) {instance.loginInfo = LogInf;}
 
     public HashMap<String, PersonModel> getPeople() { return people; }
-    public static PersonModel getPerson(String personID) {return !instance.people.containsKey(personID) ? instance.people.get(personID) : null;}
+    public static PersonModel getPerson(String personID) { return instance.people.containsKey(personID) ? instance.people.get(personID) : null;}
     public HashMap<String, EventModel> getEvents() { return events; }
     public HashMap<String, HashMap<String, EventModel>> getPersonEvents() { return personEvents; }
     public PersonModel getCurrentUser() {return people.get(currentUserID);}
@@ -41,7 +41,7 @@ public class DataCache {
     public ArrayList<PersonModel> getChildren(String personID) {
         ArrayList<PersonModel> children = new ArrayList<>();
         for (PersonModel person : people.values())
-            if (person.getMotherID().equals(personID) || person.getFatherID().equals(personID))
+            if (personID.equals(person.getMotherID()) || personID.equals(person.getFatherID()))
                 children.add(person);
         return children;
     }
