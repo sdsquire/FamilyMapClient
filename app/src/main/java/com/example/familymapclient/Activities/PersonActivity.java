@@ -43,11 +43,6 @@ public class PersonActivity extends AppCompatActivity {
         // FILL EVENT AND PERSON DATA TO PASS TO EXPANDABLE LIST //
         ArrayList<EventModel> eventList = FMData.getPersonEvents().get(currPerson.getPersonID());
 
-//                new ArrayList<>(Objects.requireNonNull(FMData.getPersonEvents().get(currPerson.getPersonID())).values());
-//        Collections.sort(eventList, new Comparator<EventModel>() {
-//            public int compare(EventModel e1, EventModel e2){ return e1.getYear() - e2.getYear(); }
-//        });
-
         ArrayList<PersonModel> familyList = new ArrayList<>();
         if (currPerson.getFatherID() != null) {
             familyList.add(FMData.getPerson(currPerson.getFatherID()));
@@ -149,7 +144,7 @@ public class PersonActivity extends AppCompatActivity {
             PersonModel currPerson;
 
             // FORMAT TEXT AND SET IMAGE ICON, AND WHEN CLICKED... //
-            switch (groupPosition) {
+            switch (groupPosition) { //FIXME: crashes when I click on my spouse, probably because her information is registered to a different account. Do I need to account for that?
                 case EVENT_GROUP_POSITION: // ... LAUNCH NEW MAP FRAGMENT CENTERED ON CLICKED EVENT
                     EventModel currEvent = events.get(childPosition);
                     dataText.setText(getString(R.string.lifeEventsData, currEvent.getEventType().toUpperCase(Locale.ROOT), currEvent.getCity(), currEvent.getCountry(), currEvent.getYear()));
