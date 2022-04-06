@@ -27,6 +27,7 @@ import Models.PersonModel;
 public class PersonActivity extends AppCompatActivity {
     public final static String PERSON_KEY = "currPerson";
     private final HashMap<String, String> relationshipIDs = new HashMap<>();
+    private final DataCache FMData = DataCache.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,32 +37,32 @@ public class PersonActivity extends AppCompatActivity {
         ExpandableListView connections = findViewById(R.id.connectedItems);
 
         // GET PERSON AND FILL OUT BASIC INFO //
-        PersonModel currPerson = DataCache.getPerson(getIntent().getStringExtra(PERSON_KEY));
+        PersonModel currPerson = FMData.getPerson(getIntent().getStringExtra(PERSON_KEY));
         assert currPerson != null;
         ((TextView) findViewById(R.id.personActFirstName)).setText(currPerson.getFirstName());
         ((TextView) findViewById(R.id.personActLastName)).setText(currPerson.getLastName());
         ((TextView) findViewById(R.id.personActGender)).setText(currPerson.getGender().equals("m") ? "Male" : "Female");
 
         // FILL EVENT AND PERSON DATA TO PASS TO EXPANDABLE LIST //
-        ArrayList<EventModel> eventList = new ArrayList<>(Objects.requireNonNull(DataCache.getInstance().getPersonEvents().get(currPerson.getPersonID())).values());
+        ArrayList<EventModel> eventList = new ArrayList<>(Objects.requireNonNull(FMData.getPersonEvents().get(currPerson.getPersonID())).values());
         Collections.sort(eventList, new Comparator<EventModel>() {
             public int compare(EventModel e1, EventModel e2){ return e1.getYear() - e2.getYear(); }
         });
 
         ArrayList<PersonModel> familyList = new ArrayList<>();
         if (currPerson.getFatherID() != null) {
-            familyList.add(DataCache.getPerson(currPerson.getFatherID()));
+            familyList.add(FMData.getPerson(currPerson.getFatherID()));
             relationshipIDs.put(currPerson.getFatherID(), "Father");
         }
         if (currPerson.getMotherID() != null) {
-            familyList.add(DataCache.getPerson(currPerson.getMotherID()));
+            familyList.add(FMData.getPerson(currPerson.getMotherID()));
             relationshipIDs.put(currPerson.getMotherID(), "Mother");
         }
         if (currPerson.getSpouseID() != null) {
-            familyList.add(DataCache.getPerson(currPerson.getSpouseID()));
+            familyList.add(FMData.getPerson(currPerson.getSpouseID()));
             relationshipIDs.put(currPerson.getSpouseID(), "Spouse");
         }
-        for (PersonModel child : DataCache.getInstance().getChildren(currPerson.getPersonID())) {
+        for (PersonModel child : FMData.getChildren(currPerson.getPersonID())) {
             familyList.add(child);
             relationshipIDs.put(child.getPersonID(), "Child");
         }
@@ -112,7 +113,7 @@ public class PersonActivity extends AppCompatActivity {
 
         /** Initializes the view if it does not exist; initializes basic information values.
          * @param groupPosition The id of the targeted group.
-         * @param isExpanded Used only in superclass.
+         * @param isExpanded Used only by the superclass.
          * @param convertView The view when all the items are grouped under the title.
          * @param parent The parent ViewGroup.
          * @return The Initialized convertView.
@@ -133,8 +134,8 @@ public class PersonActivity extends AppCompatActivity {
         /** Inflates the
          * @param groupPosition The id of the targeted group.
          * @param childPosition The position of the targeted child.
-         * @param isLastChild Used only in superclass.
-         * @param convertView Used only in superclass.
+         * @param isLastChild Used only by the superclass.
+         * @param convertView Used only by the superclass.
          * @param parent The parent ViewGroup.
          * @return The view of the target item.
          */
@@ -148,16 +149,23 @@ public class PersonActivity extends AppCompatActivity {
             ImageView icon = itemView.findViewById(R.id.textIcon);
             PersonModel currPerson;
 
-            // FORMAT TEXT AND SET IMAGE ICON //
+            // FORMAT TEXT AND SET IMAGE ICON, AND WHEN CLICKED... //
             switch (groupPosition) {
-                case EVENT_GROUP_POSITION:
+                case EVENT_GROUP_POSITION: // ... LAUNCH NEW MAP FRAGMENT CENTERED ON CLICKED EVENT
                     EventModel currEvent = events.get(childPosition);
                     dataText.setText(getString(R.string.lifeEventsData, currEvent.getEventType().toUpperCase(Locale.ROOT), currEvent.getCity(), currEvent.getCountry(), currEvent.getYear()));
-                    currPerson = DataCache.getPerson(currEvent.getPersonID());
+                    currPerson = FMData.getPerson(currEvent.getPersonID());
                     assert currPerson != null;
                     descriptionText.setText(getString(R.string.personName, currPerson.getFirstName(), currPerson.getLastName()));
+                    itemView.setOnClickListener(View -> {
+                        MapFragment fragment = new MapFragment(); // TODO: Check if fragment == null?
+                        Bundle args = new Bundle();
+                        args.putString(MapFragment.EVENT_KEY, currEvent.getEventID());
+                        fragment.setArguments(args);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.personActivityLayout, fragment).commit();
+                    });
                     break;
-                case PERSON_GROUP_POSITION:
+                case PERSON_GROUP_POSITION: // ... OPEN NEW PERSON ACTIVITY BASED ON CLICKED PERSON
                     currPerson = people.get(childPosition);
                     dataText.setText(getString(R.string.personName, currPerson.getFirstName(), currPerson.getLastName()));
                     descriptionText.setText(relationshipIDs.get(currPerson.getPersonID()));

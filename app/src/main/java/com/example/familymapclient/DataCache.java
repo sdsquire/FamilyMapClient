@@ -31,10 +31,11 @@ public class DataCache {
     public static void setUserLogin(LoginInfo LogInf) {instance.loginInfo = LogInf;}
 
     public HashMap<String, PersonModel> getPeople() { return people; }
-    public static PersonModel getPerson(String personID) { return instance.people.containsKey(personID) ? instance.people.get(personID) : null;}
+    public PersonModel getPerson(String personID) { return instance.people.containsKey(personID) ? instance.people.get(personID) : null;}
+    public EventModel getEvent(String eventID) { return instance.events.containsKey(eventID) ? instance.events.get(eventID) : null;}
     public HashMap<String, EventModel> getEvents() { return events; }
     public HashMap<String, HashMap<String, EventModel>> getPersonEvents() { return personEvents; }
-    public PersonModel getCurrentUser() {return people.get(currentUserID);}
+    public PersonModel getCurrentUser() {return instance.people.get(currentUserID);}
     public LoginInfo getUserLogin() { return loginInfo; }
 
     // More advanced get functions

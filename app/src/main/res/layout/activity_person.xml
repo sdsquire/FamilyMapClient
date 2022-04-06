@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="7dp"
+    android:id="@+id/personActivityLayout"
     tools:context=".Activities.PersonActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/basicInfo"
+        android:orientation="vertical"
+        android:padding="7dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -57,10 +62,12 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"/>
-
-
-        <ExpandableListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/connectedItems"/>
     </LinearLayout>
+    <ExpandableListView
+        android:id="@+id/connectedItems"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/basicInfo"
+        android:padding="7dp"/>
+
+</RelativeLayout>
