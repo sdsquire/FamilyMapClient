@@ -2,6 +2,8 @@ package com.example.familymapclient.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -32,6 +34,7 @@ public class PersonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
         ExpandableListView connections = findViewById(R.id.connectedItems);
+
 
         // GET PERSON AND FILL OUT BASIC INFO //
         PersonModel currPerson = FMData.getPerson(getIntent().getStringExtra(PERSON_KEY));
@@ -64,6 +67,23 @@ public class PersonActivity extends AppCompatActivity {
         // CREATE EXPANDABLE LIST //
          connections.setAdapter(new PersonActivityAdapter(eventList, familyList));
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.child_activity_menu, menu);
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() != R.id.home)
+//            return false;
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        return true;
+    }
+
 
     /** Interfaces between the data and the Expandable List. */
     private class PersonActivityAdapter extends BaseExpandableListAdapter {

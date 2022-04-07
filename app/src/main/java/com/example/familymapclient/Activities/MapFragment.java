@@ -89,9 +89,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater menuInflater) { menuInflater.inflate(R.menu.map_menu, menu); }
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+        if (requireActivity().getClass() == MainActivity.class)
+            menuInflater.inflate(R.menu.map_menu, menu);
+    }
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) { return super.onOptionsItemSelected(item); }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = item.getItemId() == R.id.search_menu ? new Intent(requireActivity(), SearchActivity.class) :
+                        item.getItemId() == R.id.search_menu ? new Intent(requireActivity(), SettingsActivity.class) :
+                                null;
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
