@@ -1,6 +1,7 @@
 package com.example.familymapclient.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,6 +48,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final DataCache FMData = DataCache.getInstance();
     private final int MAX_HUE = 360;
     private final int PLINE_MAX_WIDTH = 16;
+    private final int MINT = Color.rgb(62,180,137);
+    private final int GOLD = Color.rgb(255, 215, 0);
 
 
     /** Initializes the first event according to an eventID argument if exists; else to the first event (birth) of the current user.
@@ -93,9 +96,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
+        basePerson = FMData.getPerson(baseEvent.getPersonID());
 
         this.initializeMarkers();
-        this.drawFamilyLines();
+        this.drawEventLines();
 
         map.setOnMarkerClickListener(marker -> { //Formats description text and changes gender icon
             baseEvent = (EventModel)marker.getTag();
@@ -106,6 +110,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             ((TextView) requireView().findViewById(R.id.mapLabelText)).setText(outputText);
             ((ImageView) requireView().findViewById(R.id.genderIcon)).setImageResource(basePerson.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
             requireView().findViewById(R.id.eventDescriptor).setEnabled(true);
+            map.clear();
+            initializeMarkers();
+            drawEventLines();
             return true;
         });
 
@@ -139,7 +146,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private ArrayList<EventModel> getAncestorEvents(String personID, ArrayList<EventModel> eventsList) { //FIXME: crashing here; should be easy, just too tired to fix
+    private ArrayList<EventModel> getAncestorEvents(String personID, ArrayList<EventModel> eventsList) {
         eventsList.addAll(FMData.getPersonEvents(personID));
         if (FMData.getPerson(personID).getFatherID() != null)
             getAncestorEvents(FMData.getPerson(personID).getFatherID(), eventsList);
@@ -149,41 +156,50 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     /** Draws all family lines associated with the event's owner; recursively calls drawParentLines(). */
-    private void drawFamilyLines() {
+    private void drawEventLines() {
         // DRAW SPOUSE LINE //
-        PersonModel thisPerson = basePerson;
-        EventModel thisBirth = FMData.getPersonEvents().get(thisPerson.getPersonID()).get(0);
-        EventModel spouseBirth = FMData.getPersonEvents().get(thisPerson.getSpouseID()).get(0);
-        assert thisBirth != null;
+        EventModel spouseBirth = FMData.getPersonEvents().get(basePerson.getSpouseID()).get(0);
         assert spouseBirth != null;
-        Polyline line = map.addPolyline(
+        lines.add(map.addPolyline(
             new PolylineOptions()
-                .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
+                .add(new LatLng(baseEvent.getLatitude(), baseEvent.getLongitude()))
                 .add(new LatLng(spouseBirth.getLatitude(), spouseBirth.getLongitude()))
                 .width(this.PLINE_MAX_WIDTH)
-                .color(R.color.red) //FIXME: How do I set the colors??
-        );
-        drawParentLines(thisPerson, 1);
+                .color(Color.RED)
+        ));
+        drawParentLines(basePerson, baseEvent, 1);
+        drawLifeStoryLines();
     }
 
     /** Draws lines to parent's births, then recursively continues for each parent.
      * @param thisPerson The person currently being considered.
+     * @param thisEvent The event to draw from; defaults to birth if passed null.
      * @param generation The number of generations back from the original person; thickness of lines are inversely determined by this parameter;
      */
-    private void drawParentLines(PersonModel thisPerson, int generation) {
-        EventModel thisBirth = FMData.getPersonEvents(thisPerson.getPersonID()).get(0);
+    private void drawParentLines(PersonModel thisPerson, EventModel thisEvent, int generation) {
+        if (thisEvent == null)
+            thisEvent = FMData.getPersonEvents(thisPerson.getPersonID()).get(0);
 
-        String[] parentIDs = {thisPerson.getFatherID(), thisPerson.getMotherID()};
-        for (String parentID : parentIDs)
+        for (String parentID : new String[]  {thisPerson.getFatherID(), thisPerson.getMotherID()})
             if (parentID != null) {
                 EventModel parentBirth = FMData.getPersonEvents(parentID).get(0);
-                Polyline line = map.addPolyline( new PolylineOptions()
-                        .add(new LatLng(thisBirth.getLatitude(), thisBirth.getLongitude()))
+                lines.add(map.addPolyline( new PolylineOptions()
+                        .add(new LatLng(thisEvent.getLatitude(), thisEvent.getLongitude()))
                         .add(new LatLng(parentBirth.getLatitude(), parentBirth.getLongitude()))
                         .width((float)this.PLINE_MAX_WIDTH / generation)
-                );
-                drawParentLines(FMData.getPeople().get(parentID), generation + 1);
-                lines.add(line);
+                        .color(MINT)
+                ));
+                drawParentLines(FMData.getPeople().get(parentID), null,generation + 1);
             }
+    }
+
+    private void drawLifeStoryLines() {
+        for (EventModel event : FMData.getPersonEvents(baseEvent.getPersonID()))
+            if (!baseEvent.getEventID().equals(event.getEventID()))
+                lines.add(map.addPolyline( new PolylineOptions()
+                        .add(new LatLng(baseEvent.getLatitude(), baseEvent.getLongitude()))
+                        .add(new LatLng(event.getLatitude(), event.getLongitude()))
+                        .width(this.PLINE_MAX_WIDTH)
+                        .color(GOLD)));
     }
 }

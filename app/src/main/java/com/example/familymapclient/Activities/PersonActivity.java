@@ -144,7 +144,7 @@ public class PersonActivity extends AppCompatActivity {
             PersonModel currPerson;
 
             // FORMAT TEXT AND SET IMAGE ICON, AND WHEN CLICKED... //
-            switch (groupPosition) { //FIXME: crashes when I click on my spouse, probably because her information is registered to a different account. Do I need to account for that?
+            switch (groupPosition) {
                 case EVENT_GROUP_POSITION: // ... LAUNCH NEW MAP FRAGMENT CENTERED ON CLICKED EVENT
                     EventModel currEvent = events.get(childPosition);
                     dataText.setText(getString(R.string.lifeEventsData, currEvent.getEventType().toUpperCase(Locale.ROOT), currEvent.getCity(), currEvent.getCountry(), currEvent.getYear()));
