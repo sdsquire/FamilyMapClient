@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
 
         } else if (fragment instanceof LoginFragment)
                 ((LoginFragment) fragment).registerListener(this);
+        else if (fragment instanceof MapFragment)
+            fragmentManager.beginTransaction().add(R.id.mainActivityLayout, new MapFragment()).commit();
     }
 
     @Override
