@@ -13,9 +13,9 @@ public class DataCache {
     public static synchronized DataCache getInstance() { return instance; }
     private DataCache(){}
 
+    private EventOptions options = new EventOptions();
     private final HashMap<String, PersonModel> people = new HashMap<>();
     private final HashMap<String, EventModel> events = new HashMap<>();
-//    private final HashMap<String, HashMap<String, EventModel>> personEvents = new HashMap<>();
     private final HashMap<String, ArrayList<EventModel>> personEvents = new HashMap<>();
     private String currentUserID;
     private LoginInfo loginInfo;
@@ -29,12 +29,15 @@ public class DataCache {
         Objects.requireNonNull(personEvents.get(event.getPersonID())).add(event);
         Collections.sort(Objects.requireNonNull(personEvents.get(event.getPersonID())), (e1, e2) -> e1.getYear() - e2.getYear());
     }
+
+    public static void setOptions(EventOptions options) {instance.options = options;}
     public static void setCurrentUser(String personID) { instance.currentUserID = personID; }
     public static void setUserLogin(LoginInfo LogInf) {instance.loginInfo = LogInf;}
 
+    public EventOptions getOptions() {return instance.options;}
     public HashMap<String, PersonModel> getPeople() { return people; }
-    public PersonModel getPerson(String personID) { return instance.people.containsKey(personID) ? instance.people.get(personID) : null;}
-    public EventModel getEvent(String eventID) { return instance.events.containsKey(eventID) ? instance.events.get(eventID) : null;}
+    public PersonModel getPerson(String personID) { return instance.people.getOrDefault(personID, null);}
+    public EventModel getEvent(String eventID) { return instance.events.getOrDefault(eventID, null);}
     public HashMap<String, EventModel> getEvents() { return events; }
     public HashMap<String, ArrayList<EventModel>> getPersonEvents() { return personEvents; }
     public ArrayList<EventModel> getPersonEvents(String personID) {return personEvents.get(personID);}

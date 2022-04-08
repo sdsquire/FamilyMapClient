@@ -33,6 +33,7 @@
             android:id="@+id/lifeStorySwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:checked="true"
             android:layout_gravity="end" />
     </LinearLayout>
     <View
@@ -67,6 +68,7 @@
             android:id="@+id/familyTreeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:checked="true"
             android:layout_gravity="end" />
     </LinearLayout>
     <View
@@ -101,6 +103,7 @@
             android:id="@+id/spouseSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:checked="true"
             android:layout_gravity="end" />
     </LinearLayout>
     <View
@@ -135,6 +138,7 @@
             android:id="@+id/fatherSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:checked="true"
             android:layout_gravity="end" />
     </LinearLayout>
     <View
@@ -169,6 +173,7 @@
             android:id="@+id/motherSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:checked="true"
             android:layout_gravity="end" />
     </LinearLayout>
     <View
@@ -203,6 +208,7 @@
             android:id="@+id/maleSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:checked="true"
             android:layout_gravity="end" />
     </LinearLayout>
     <View
@@ -237,6 +243,7 @@
             android:id="@+id/femaleSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:checked="true"
             android:layout_gravity="end" />
     </LinearLayout>
     <View
@@ -246,10 +253,11 @@
 
     <!--    LOGOUT-->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/logoutView"
         android:orientation="vertical"
+        android:padding="8dp"
         android:gravity="start">
         <TextView
             android:layout_width="wrap_content"

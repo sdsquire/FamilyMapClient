@@ -96,9 +96,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = item.getItemId() == R.id.search_menu ? new Intent(requireActivity(), SearchActivity.class) :
-                        item.getItemId() == R.id.search_menu ? new Intent(requireActivity(), SettingsActivity.class) :
+                        item.getItemId() == R.id.settings_menu ? new Intent(requireActivity(), SettingsActivity.class) :
                                 null;
-
+        startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
 
@@ -119,7 +119,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             ((TextView) requireView().findViewById(R.id.mapLabelText)).setText(outputText);
             ((ImageView) requireView().findViewById(R.id.genderIcon)).setImageResource(basePerson.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
             requireView().findViewById(R.id.eventDescriptor).setEnabled(true);
-            map.clear();
+            map.clear(); //ASK: When clicked, am I supposed to clear the markers as well?
             initializeMarkers();
             drawEventLines();
             return true;

@@ -1,13 +1,13 @@
 package com.example.familymapclient;
 
 public class EventOptions {
-    private boolean lifeStoryLines = true;
-    private boolean familyTreeLines = true;
-    private boolean spouseLines = true;
-    private boolean fatherSideLines = true;
-    private boolean motherSideLines = true;
-    private boolean maleEvents = true;
-    private boolean femaleEvents = true;
+    protected boolean lifeStoryLines = true;
+    protected boolean familyTreeLines = true;
+    protected boolean spouseLines = true;
+    protected boolean fatherSideLines = true;
+    protected boolean motherSideLines = true;
+    protected boolean maleEvents = true;
+    protected boolean femaleEvents = true;
 
     public EventOptions(boolean lifeStoryLines, boolean familyTreeLines, boolean spouseLines, boolean fatherSideLines, boolean motherSideLines, boolean maleEvents, boolean femaleEvents) {
         this.lifeStoryLines = lifeStoryLines;
@@ -18,19 +18,22 @@ public class EventOptions {
         this.maleEvents = maleEvents;
         this.femaleEvents = femaleEvents;
     }
+    public EventOptions() {
+        lifeStoryLines = familyTreeLines = spouseLines = fatherSideLines = motherSideLines = maleEvents = femaleEvents = true;
+    }
 
     public boolean showLifeStoryLines() { return lifeStoryLines; }
-    public void setLifeStoryLines(boolean lifeStoryLines) { this.lifeStoryLines = lifeStoryLines; }
     public boolean showFamilyTreeLines() { return familyTreeLines; }
-    public void setFamilyTreeLines(boolean familyTreeLines) { this.familyTreeLines = familyTreeLines; }
     public boolean showSpouseLines() { return spouseLines; }
-    public void setSpouseLines(boolean spouseLines) { this.spouseLines = spouseLines; }
     public boolean showFatherSideLines() { return fatherSideLines; }
-    public void setFatherSideLines(boolean fatherSideLines) { this.fatherSideLines = fatherSideLines; }
     public boolean showMotherSideLines() { return motherSideLines; }
-    public void setMotherSideLines(boolean motherSideLines) { this.motherSideLines = motherSideLines; }
     public boolean showMaleEvents() { return maleEvents; }
-    public void setMaleEvents(boolean maleEvents) { this.maleEvents = maleEvents; }
     public boolean showFemaleEvents() { return femaleEvents; }
+    public void setLifeStoryLines(boolean lifeStoryLines) { this.lifeStoryLines = lifeStoryLines; }
+    public void setFamilyTreeLines(boolean familyTreeLines) { this.familyTreeLines = familyTreeLines; }
+    public void setSpouseLines(boolean spouseLines) { this.spouseLines = spouseLines; }
+    public void setFatherSideLines(boolean fatherSideLines) { this.fatherSideLines = fatherSideLines; }
+    public void setMotherSideLines(boolean motherSideLines) { this.motherSideLines = motherSideLines; }
+    public void setMaleEvents(boolean maleEvents) { this.maleEvents = maleEvents; }
     public void setFemaleEvents(boolean femaleEvents) { this.femaleEvents = femaleEvents; }
 }
