@@ -15,7 +15,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState); //ASK: When exiting my settings app, I think it sends me back to my Login fragment. Why?
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         SwitchCompat lifeStorySwitch = findViewById(R.id.lifeStorySwitch);
@@ -41,5 +41,6 @@ public class SettingsActivity extends AppCompatActivity {
         femaleSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setFemaleEvents(isChecked));
         femaleSwitch.setChecked(options.showFemaleEvents());
 
+        findViewById(R.id.logoutView).setOnClickListener(View -> {});
     }
 }

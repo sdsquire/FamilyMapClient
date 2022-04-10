@@ -17,7 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.familymapclient.DataCache;
+import com.example.familymapclient.EventOptions;
 import com.example.familymapclient.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -44,8 +46,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public static final String EVENT_KEY = "eventKey";
     private final HashSet<Marker> markers = new HashSet<>();
     private final HashSet<Polyline> lines = new HashSet<>();
+
     private final HashMap<String, Float> colors = new HashMap<>();
     private static final DataCache FMData = DataCache.getInstance();
+    private final EventOptions options = FMData.getOptions();
     private final int MAX_HUE = 360;
     private final int PLINE_MAX_WIDTH = 16;
     private final int MINT = Color.rgb(62,180,137);
@@ -105,21 +109,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
+        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(baseEvent.getLatitude(), baseEvent.getLongitude())));
         basePerson = FMData.getPerson(baseEvent.getPersonID());
 
         this.initializeMarkers();
-        this.drawEventLines();
 
-        map.setOnMarkerClickListener(marker -> { //Formats description text and changes gender icon
+        map.setOnMarkerClickListener(marker -> {
             baseEvent = (EventModel)marker.getTag();
             basePerson = FMData.getPerson(baseEvent.getPersonID());
             assert basePerson != null;
+            // FORMAT DESCRIPTION TEXT BOX //
             String outputText = getResources().getString(R.string.event_selected_text, basePerson.getFirstName(), basePerson.getLastName(),
                                                 baseEvent.getEventType().toUpperCase(Locale.ROOT), baseEvent.getCity(), baseEvent.getCountry(), baseEvent.getYear());
             ((TextView) requireView().findViewById(R.id.mapLabelText)).setText(outputText);
             ((ImageView) requireView().findViewById(R.id.genderIcon)).setImageResource(basePerson.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
             requireView().findViewById(R.id.eventDescriptor).setEnabled(true);
-            map.clear(); //ASK: When clicked, am I supposed to clear the markers as well?
+            // FORMAT MAP //
             initializeMarkers();
             drawEventLines();
             return true;
@@ -135,37 +140,72 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initializeMarkers() {
-        ArrayList<EventModel> eventsToMark = getAncestorEvents(baseEvent.getPersonID(), new ArrayList<>());
-        if (basePerson.getSpouseID() != null)
-            eventsToMark.addAll(FMData.getPersonEvents(basePerson.getSpouseID()));
+        // DETERMINE WHICH EVENTS (LIFE STORY, SPOUSE, ANCESTOR) EVENTS TO ADD //
+        ArrayList<EventModel> eventsToMark = new ArrayList<>();
+        if (validateGender(basePerson.getGender()))
+            eventsToMark.addAll(FMData.getPersonEvents(basePerson.getPersonID()));
+        PersonModel spouse = FMData.getPerson(basePerson.getSpouseID());
+        if (spouse != null && validateGender(spouse.getGender()))
+            eventsToMark.addAll(FMData.getPersonEvents(spouse.getPersonID()));
+        if (options.showFatherSideLines())
+            getAncestorEvents(basePerson.getFatherID(), eventsToMark);
+        if (options.showMotherSideLines())
+            getAncestorEvents(basePerson.getMotherID(), eventsToMark);
+
         for (EventModel event : eventsToMark) {
             float color;
-            if (colors.containsKey(event.getEventType()))
-                color = colors.get(event.getEventType());
-            else {
+            if (!colors.containsKey(event.getEventType())){
                 color = new Random().nextInt(this.MAX_HUE);
                 colors.put(event.getEventType(), color);
-            }
+            } else
+                color = colors.get(event.getEventType());
 
             Marker marker = map.addMarker(new MarkerOptions().
                     position(new LatLng(event.getLatitude(), event.getLongitude())).
                     icon(BitmapDescriptorFactory.defaultMarker(color)));
             assert marker != null;
             marker.setTag(event);
+
+
+
+
+
+
+
+//                getAncestorEvents(baseEvent.getPersonID(), new ArrayList<>());
+//        if (basePerson.getSpouseID() != null)
+//            eventsToMark.addAll(FMData.getPersonEvents(basePerson.getSpouseID()));
+//        for (EventModel event : eventsToMark) {
+//            float color;
+//            if (colors.containsKey(event.getEventType()))
+//                color = colors.get(event.getEventType());
+//            else {
+//                color = new Random().nextInt(this.MAX_HUE);
+//                colors.put(event.getEventType(), color);
+//            }
+//
+//            Marker marker = map.addMarker(new MarkerOptions().
+//                    position(new LatLng(event.getLatitude(), event.getLongitude())).
+//                    icon(BitmapDescriptorFactory.defaultMarker(color)));
+//            assert marker != null;
+//            marker.setTag(event);
         }
     }
 
-    private ArrayList<EventModel> getAncestorEvents(String personID, ArrayList<EventModel> eventsList) {
-        eventsList.addAll(FMData.getPersonEvents(personID));
-        if (FMData.getPerson(personID).getFatherID() != null)
-            getAncestorEvents(FMData.getPerson(personID).getFatherID(), eventsList);
-        if (FMData.getPerson(personID).getMotherID() != null)
-            getAncestorEvents(FMData.getPerson(personID).getMotherID(), eventsList);
-        return eventsList;
+    private void getAncestorEvents(String personID, ArrayList<EventModel> eventsList) {
+        if (personID == null)
+            return;
+        if (validateGender(FMData.getPerson(personID).getGender()))
+            eventsList.addAll(FMData.getPersonEvents(personID));
+        getAncestorEvents(FMData.getPerson(personID).getFatherID(), eventsList);
+        getAncestorEvents(FMData.getPerson(personID).getMotherID(), eventsList);
     }
 
     /** Draws all family lines associated with the event's owner; recursively calls drawParentLines(). */
     private void drawEventLines() {
+        for (Polyline line : lines)
+            line.remove();
+        lines.clear();
         // DRAW SPOUSE LINE //
         EventModel spouseBirth = FMData.getPersonEvents().get(basePerson.getSpouseID()).get(0);
         assert spouseBirth != null;
@@ -210,5 +250,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .add(new LatLng(event.getLatitude(), event.getLongitude()))
                         .width(this.PLINE_MAX_WIDTH)
                         .color(GOLD)));
+    }
+
+    private boolean validateGender(String gender) {
+        return gender.equals("m") && options.showMaleEvents() || gender.equals("f") && options.showFemaleEvents();
     }
 }

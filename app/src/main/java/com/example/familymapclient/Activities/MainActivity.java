@@ -49,14 +49,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
-        editor.apply();
+//        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+////        editor.putString(LOGIN_INFO_KEY, null);
+//        editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
+//        editor.apply();
     }
 
 
     public void userAuthenticated() {
         FragmentManager fragmentManager = this.getSupportFragmentManager();
+        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
+//        editor.putString(LOGIN_INFO_KEY, null);
+        editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
+        editor.apply();
 
         PersonModel user = DataCache.getInstance().getCurrentUser();
         Toast.makeText(this, "Welcome " + user.getFirstName() + " " + user.getLastName() + "!", Toast.LENGTH_SHORT).show();
