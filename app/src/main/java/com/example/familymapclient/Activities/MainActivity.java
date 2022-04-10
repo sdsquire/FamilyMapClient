@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     private static final String LOGIN_INFO_KEY = "LoginInfo";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { // FIXME: When I leave settings activity, it logs out. How to remember fragments?
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
         } else if (fragment instanceof LoginFragment)
                 ((LoginFragment) fragment).registerListener(this);
         else if (fragment instanceof MapFragment)
-            fragmentManager.beginTransaction().add(R.id.mainActivityLayout, new MapFragment()).commit();
+            fragmentManager.beginTransaction().add(R.id.mainActivityLayout, fragment).commit();
     }
 
     @Override
@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     public void userAuthenticated() {
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-//        editor.putString(LOGIN_INFO_KEY, null);
-        editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
+        editor.putString(LOGIN_INFO_KEY, null);
+//        editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
         editor.apply();
 
         PersonModel user = DataCache.getInstance().getCurrentUser();

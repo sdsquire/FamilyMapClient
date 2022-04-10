@@ -2,6 +2,7 @@ package com.example.familymapclient;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ public class DataCache {
     public void addEvent(EventModel event) {
         events.put(event.getEventID(), event);
         Objects.requireNonNull(personEvents.get(event.getPersonID())).add(event);
-        Collections.sort(Objects.requireNonNull(personEvents.get(event.getPersonID())), (e1, e2) -> e1.getYear() - e2.getYear());
+        Collections.sort(Objects.requireNonNull(personEvents.get(event.getPersonID())), Comparator.comparingInt(EventModel::getYear));
     }
 
     public static void setOptions(EventOptions options) {instance.options = options;}
