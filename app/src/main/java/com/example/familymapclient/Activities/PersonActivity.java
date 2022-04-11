@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.familymapclient.DataCache;
+import com.example.familymapclient.EventOptions;
 import com.example.familymapclient.R;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class PersonActivity extends AppCompatActivity {
     public final static String PERSON_KEY = "currPerson";
     private final HashMap<String, String> relationshipIDs = new HashMap<>();
     private final DataCache FMData = DataCache.getInstance();
+    private final EventOptions options = FMData.getOptions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,20 +49,21 @@ public class PersonActivity extends AppCompatActivity {
         ArrayList<EventModel> eventList = FMData.getPersonEvents().get(currPerson.getPersonID());
 
         ArrayList<PersonModel> familyList = new ArrayList<>();
-        if (currPerson.getFatherID() != null) {
+        if (currPerson.getFatherID() != null && options.showMaleEvents() && options.showFatherSideLines()) {
             familyList.add(FMData.getPerson(currPerson.getFatherID()));
             relationshipIDs.put(currPerson.getFatherID(), "Father");
         }
-        if (currPerson.getMotherID() != null) {
+        if (currPerson.getMotherID() != null && options.showFemaleEvents() && options.showMotherSideLines()) {
             familyList.add(FMData.getPerson(currPerson.getMotherID()));
             relationshipIDs.put(currPerson.getMotherID(), "Mother");
         }
-        if (currPerson.getSpouseID() != null) {
+        if (currPerson.getSpouseID() != null && validateGender(FMData.getPerson(currPerson.getSpouseID()).getGender())) {
             familyList.add(FMData.getPerson(currPerson.getSpouseID()));
             relationshipIDs.put(currPerson.getSpouseID(), "Spouse");
         }
         for (PersonModel child : FMData.getChildren(currPerson.getPersonID())) {
-            familyList.add(child);
+            if (validateGender(FMData.getPerson(child.getPersonID()).getGender()))
+                familyList.add(child);
             relationshipIDs.put(child.getPersonID(), "Child");
         }
 
@@ -82,6 +85,10 @@ public class PersonActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         return true;
+    }
+
+    private boolean validateGender(String gender) {
+        return gender.equals("m") && options.showMaleEvents() || gender.equals("f") && options.showFemaleEvents();
     }
 
 
@@ -160,7 +167,7 @@ public class PersonActivity extends AppCompatActivity {
 
             TextView dataText =  itemView.findViewById(R.id.listItemData);
             TextView descriptionText = itemView.findViewById(R.id.listItemDesc);
-            ImageView icon = itemView.findViewById(R.id.textIcon);
+            ImageView icon = itemView.findViewById(R.id.listItemIcon);
             PersonModel currPerson;
 
             // FORMAT TEXT AND SET IMAGE ICON, AND WHEN CLICKED... //
