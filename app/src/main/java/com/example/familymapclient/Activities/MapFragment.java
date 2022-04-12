@@ -102,22 +102,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         if (requireActivity().getClass() == MainActivity.class)
             menuInflater.inflate(R.menu.map_menu, menu);
-//        else
-//            menuInflater.inflate(R.menu.child_activity_menu, menu);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = item.getItemId() == R.id.search_menu ? new Intent(requireActivity(), SearchActivity.class) :
-                        item.getItemId() == R.id.settings_menu ? new Intent(requireActivity(), SettingsActivity.class) : // ASK: how do I find the id for the up arrow?
-//                        item.getItemId() == 16908332 ? new Intent(requireActivity(), MainActivity.class) :
+                        item.getItemId() == R.id.settings_menu ? new Intent(requireActivity(), SettingsActivity.class) :
                                 null;
-//        int temp = item.getItemId();
         if (intent != null)
             intent.putExtra(COLOR_KEY, new Gson().toJson(colors));
-//        if (item.getItemId() == 16908332) {
-//            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP); //FIXME: See above to avoid hard-coding
-            intent.putExtra(MainActivity.LOGOUT_KEY, false);
-//        }
         startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
@@ -131,7 +123,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.initializeMarkers();
         if (requireActivity().getClass() == EventActivity.class)
             this.drawEventLines();
-
 
         map.setOnMarkerClickListener(marker -> {
             baseEvent = (EventModel)marker.getTag();

@@ -1,6 +1,8 @@
 package com.example.familymapclient.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,8 +48,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         findViewById(R.id.logoutView).setOnClickListener(View -> {
             DataCache.clear();
+
+            SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.APP_NAME_KEY, Context.MODE_PRIVATE);
+            sharedPreferences.edit().clear().apply();
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(MainActivity.LOGOUT_KEY, true);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);//FIXME fix logout button
