@@ -47,4 +47,6 @@
     <string name="familyTitle">FAMILY</string>
     <string name="lifeEventsData">%s: %s, %s (%d)</string>
     <string name="personName">%s %s</string>
+    <string name="search_icon">Search icon</string>
+    <string name="clear_icon">Clear Icon</string>
 </resources>

@@ -45,7 +45,6 @@ public class SearchActivity extends AppCompatActivity {
 
         SearchAdapter searchAdapter = new SearchAdapter(peopleResult, eventsResult);
         EditText searchBar = findViewById(R.id.searchBar);
-
         searchBar.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -53,8 +52,9 @@ public class SearchActivity extends AppCompatActivity {
                 SearchActivity.this.search(searchBar.getText().toString());
                 searchAdapter.notifyDataSetChanged();
             }
-//            public void afterTextChanged(Editable editable) {SearchActivity.this.search("er");}
         });
+
+        findViewById(R.id.clearButton).setOnClickListener(View-> searchBar.setText(""));
         searchResults.setAdapter(searchAdapter);
     }
 
@@ -84,9 +84,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
-        private ArrayList<PersonModel> peopleResults;
-        private ArrayList<EventModel> eventResults;
-        private final DataCache FMData = DataCache.getInstance();
+        private final ArrayList<PersonModel> peopleResults;
+        private final ArrayList<EventModel> eventResults;
 
         public SearchAdapter(ArrayList<PersonModel> peopleResults, ArrayList<EventModel> eventResults) {
             this.peopleResults = peopleResults;
@@ -109,12 +108,8 @@ public class SearchActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() { return peopleResults.size() + eventResults.size();}
-
         @Override
         public int getItemViewType(int position) { return position < peopleResults.size() ? PERSON_GROUP_ID : EVENT_GROUP_ID; }
-
-        public void setPeopleResults(ArrayList<PersonModel> peopleResults) { this.peopleResults = peopleResults; }
-        public void setEventResults(ArrayList<EventModel> eventResults) {this.eventResults = eventResults; }
     }
 
     private class SearchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -146,7 +141,7 @@ public class SearchActivity extends AppCompatActivity {
             currEvent = event;
             data.setText(getString(R.string.lifeEventsData, event.getEventType().toUpperCase(Locale.ROOT), event.getCity(), event.getCountry(), event.getYear()));
             PersonModel currPerson = DataCache.getInstance().getPerson(event.getPersonID());
-            data.setText(String.format("%s %s", currPerson.getFirstName(), currPerson.getLastName()));
+            description.setText(String.format("%s %s", currPerson.getFirstName(), currPerson.getLastName()));
             icon.setImageResource(R.drawable.map_pin);
         }
 

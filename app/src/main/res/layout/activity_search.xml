@@ -15,12 +15,22 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/searchIcon"
-            android:src="@drawable/search_icon"/>
-            <EditText
-                android:id="@+id/searchBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+            android:src="@drawable/search_icon_black"
+            android:contentDescription="@string/search_icon" />
+        <EditText
+            android:id="@+id/searchBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:autofillHints="Input query"
+            android:inputType="text" />
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/clearButton"
+            android:src="@drawable/clear_icon"
+            android:contentDescription="@string/clear_icon"
+            android:layout_gravity="center_vertical"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
