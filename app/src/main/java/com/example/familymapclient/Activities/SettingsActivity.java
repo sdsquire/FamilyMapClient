@@ -48,8 +48,10 @@ public class SettingsActivity extends AppCompatActivity {
             DataCache.clear();
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(MainActivity.LOGOUT_KEY, true);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);//FIXME fix logout button
+
         });
     }
 

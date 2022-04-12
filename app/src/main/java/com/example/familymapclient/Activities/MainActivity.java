@@ -30,8 +30,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
             fragment.registerListener(this);
 
             // CHECK IF USER IS ALREADY LOGGED IN //
+            loggedOut = getIntent().getBooleanExtra(LOGOUT_KEY, false);
             SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-            LoginInfo loginInfo = new Gson().fromJson(sharedPreferences.getString(LOGIN_INFO_KEY, null), LoginInfo.class);
+            LoginInfo loginInfo = loggedOut ? null : new Gson().fromJson(sharedPreferences.getString(LOGIN_INFO_KEY, null), LoginInfo.class);
             if (loginInfo != null)
                 fragment.reAuthenticate(loginInfo);
             else
@@ -39,10 +40,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
 
         } else {
             MapFragment fragment = new MapFragment();
-            Bundle args = new Bundle();
-            String colorMapJson = getIntent().getStringExtra(MapFragment.COLOR_KEY);
-            args.putString(MapFragment.COLOR_KEY, colorMapJson);
-            fragment.setArguments(args);
 
             getSupportFragmentManager().beginTransaction().replace(R.id.eventActivityLayout, fragment).commit();
 

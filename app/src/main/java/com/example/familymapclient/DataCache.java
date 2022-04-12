@@ -10,9 +10,13 @@ import Models.EventModel;
 import Models.PersonModel;
 
 public class DataCache {
-    private static DataCache instance = new DataCache();
-    public static synchronized DataCache getInstance() { return instance; }
-    public static synchronized void clear() {instance = new DataCache();}
+    private static DataCache instance;
+    public static synchronized DataCache getInstance() {
+        if (instance == null)
+            instance = new DataCache();
+        return instance;
+    }
+    public static synchronized void clear() {instance = null;}
     private DataCache(){}
 
     private final EventOptions options = new EventOptions();
@@ -34,17 +38,17 @@ public class DataCache {
         Objects.requireNonNull(personEvents.get(event.getPersonID())).sort(Comparator.comparingInt(EventModel::getYear));
     }
 
-    public static void setCurrentUser(String personID) { instance.currentUserID = personID; }
-    public static void setUserLogin(LoginInfo LogInf) {instance.loginInfo = LogInf;}
+    public static void setCurrentUser(String personID) { getInstance().currentUserID = personID; }
+    public static void setUserLogin(LoginInfo LogInf) {getInstance().loginInfo = LogInf;}
 
-    public EventOptions getOptions() {return instance.options;}
+    public EventOptions getOptions() {return getInstance().options;}
     public HashMap<String, PersonModel> getPeople() { return people; }
     public HashMap<String, EventModel> getEvents() { return events; }
     public HashMap<String, ArrayList<EventModel>> getPersonEvents() { return personEvents; }
-    public PersonModel getPerson(String personID) { return instance.people.getOrDefault(personID, null);}
-    public EventModel getEvent(String eventID) { return instance.events.getOrDefault(eventID, null);}
+    public PersonModel getPerson(String personID) { return getInstance().people.getOrDefault(personID, null);}
+    public EventModel getEvent(String eventID) { return getInstance().events.getOrDefault(eventID, null);}
     public ArrayList<EventModel> getPersonEvents(String personID) {return personEvents.get(personID);}
-    public PersonModel getCurrentUser() {return instance.people.get(currentUserID);}
+    public PersonModel getCurrentUser() {return getInstance().people.get(currentUserID);}
     public LoginInfo getUserLogin() { return loginInfo; }
 
     // More advanced get functions
