@@ -26,8 +26,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
         // START LOGIN FRAGMENT //
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.mainActivityLayout);
+        boolean loggedOut = getIntent().getBooleanExtra(LOGOUT_KEY, true);
+//        if (loggedOut) {
+//
+//        }
         if (fragment == null) {
-            boolean loggedOut = getIntent().getBooleanExtra(LOGOUT_KEY, true);
             if (loggedOut) {
                 fragment = new LoginFragment();
                 ((LoginFragment) fragment).registerListener(this);
