@@ -129,6 +129,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         basePerson = FMData.getPerson(baseEvent.getPersonID());
 
         this.initializeMarkers();
+        if (requireActivity().getClass() == EventActivity.class)
+            this.drawEventLines();
+
 
         map.setOnMarkerClickListener(marker -> {
             baseEvent = (EventModel)marker.getTag();
@@ -173,11 +176,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // ADD MARKERS //
         for (EventModel event : eventsToMark) {
             double color;
-            if (!colors.containsKey(event.getEventType())){
+            String eventType = event.getEventType().toLowerCase(Locale.ROOT);
+            if (!colors.containsKey(eventType)){
                 color = new Random().nextInt(MAX_HUE);
-                colors.put(event.getEventType(), color);
+                colors.put(eventType, color);
             } else
-                color = colors.get(event.getEventType());
+                color = colors.get(eventType);
 
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(new LatLng(event.getLatitude(), event.getLongitude()))
@@ -209,12 +213,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             line.remove();
         lines.clear();
         // DRAW SPOUSE LINE //
-        if (basePerson.getSpouseID() != null && options.showSpouseLines()) {
+        if (basePerson.getSpouseID() != null && options.showSpouseLines() && markedEvents.containsKey(basePerson.getSpouseID())) {
             EventModel spouseFirstEvent = markedEvents.get(basePerson.getSpouseID()).get(0);
             drawLine(baseEvent, spouseFirstEvent, SPOUSE_LINES);
         }
         // DRAW LIFE STORY LINES //
-        if (options.showLifeStoryLines()) {
+        if (options.showLifeStoryLines() && validateGender(basePerson.getGender())) {
             ArrayList<EventModel> lifeStoryEvents = FMData.getPersonEvents(basePerson.getPersonID());
             for (int i = 0; i < lifeStoryEvents.size() - 1; ++i)
                 drawLine(lifeStoryEvents.get(i), lifeStoryEvents.get(i + 1), LIFE_STORY_LINES);

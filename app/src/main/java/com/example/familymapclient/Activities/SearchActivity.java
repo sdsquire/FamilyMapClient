@@ -59,6 +59,7 @@ public class SearchActivity extends AppCompatActivity {// FIXME: Launches map ac
     }
 
     private void search(String query) {
+        query = query.toLowerCase(Locale.ROOT);
         peopleResult.clear();
         eventsResult.clear();
         for (PersonModel person : FMData.getPeople().values())

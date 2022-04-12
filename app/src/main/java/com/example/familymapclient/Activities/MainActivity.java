@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.familymapclient.DataCache;
@@ -25,44 +24,34 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
 
         // START LOGIN FRAGMENT //
         FragmentManager fragmentManager = this.getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.mainActivityLayout);
         boolean loggedOut = getIntent().getBooleanExtra(LOGOUT_KEY, true);
-//        if (loggedOut) {
-//
-//        }
-        if (fragment == null) {
-            if (loggedOut) {
-                fragment = new LoginFragment();
-                ((LoginFragment) fragment).registerListener(this);
+        if (loggedOut) {
+            LoginFragment fragment = new LoginFragment();
+            fragment.registerListener(this);
+
+            // CHECK IF USER IS ALREADY LOGGED IN //
+            SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+            LoginInfo loginInfo = new Gson().fromJson(sharedPreferences.getString(LOGIN_INFO_KEY, null), LoginInfo.class);
+            if (loginInfo != null)
+                fragment.reAuthenticate(loginInfo);
+            else
                 fragmentManager.beginTransaction().add(R.id.mainActivityLayout, fragment).commit();
 
-                // CHECK IF USER IS ALREADY LOGGED IN //
-                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-                LoginInfo loginInfo = new Gson().fromJson(sharedPreferences.getString(LOGIN_INFO_KEY, null), LoginInfo.class);
-                DataCache.setUserLogin(loginInfo);
-                if (loginInfo != null)
-                    ((LoginFragment) fragment).reAuthenticate(loginInfo);
-            } else {
-                Bundle args = new Bundle();
-            }
+        } else {
+            MapFragment fragment = new MapFragment();
+            Bundle args = new Bundle();
+            String colorMapJson = getIntent().getStringExtra(MapFragment.COLOR_KEY);
+            args.putString(MapFragment.COLOR_KEY, colorMapJson);
+            fragment.setArguments(args);
 
-        } else if (fragment instanceof LoginFragment)
-                ((LoginFragment) fragment).registerListener(this);
-        else if (fragment instanceof MapFragment)
-            fragmentManager.beginTransaction().add(R.id.mainActivityLayout, fragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.eventActivityLayout, fragment).commit();
+
+        }
     }
-
-    @Override
-    public void onRestart() {
-        super.onRestart();
-    }
-
-
 
     public void userAuthenticated() {
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-//        editor.putString(LOGIN_INFO_KEY, null);
         editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
         editor.apply();
 
