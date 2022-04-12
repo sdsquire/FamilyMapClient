@@ -179,7 +179,7 @@ public class PersonActivity extends AppCompatActivity {
                     assert currPerson != null;
                     descriptionText.setText(getString(R.string.personName, currPerson.getFirstName(), currPerson.getLastName()));
                     itemView.setOnClickListener(View -> {
-                        MapFragment fragment = new MapFragment(); // TODO: Check if fragment == null?
+                        MapFragment fragment = new MapFragment();
                         Bundle args = new Bundle();
                         args.putString(MapFragment.EVENT_KEY, currEvent.getEventID());
                         fragment.setArguments(args);

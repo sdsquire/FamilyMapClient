@@ -52,7 +52,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private final HashMap<String, Float> colors = new HashMap<>();
     public static final String EVENT_KEY = "eventKey";
     private static final int MAX_HUE = 360;
-    private static final int PLINE_MAX_WIDTH = 16;
+    private static final int LINE_MAX_WIDTH = 16;
     private static final int SPOUSE_LINES = Color.rgb(240, 100, 100);
     private static final int ANCESTOR_LINES = Color.rgb(62,180,137);
     private static final int LIFE_STORY_LINES = Color.rgb(255, 215, 0);
@@ -236,7 +236,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         lines.add(map.addPolyline( new PolylineOptions()
                 .add(new LatLng(e1.getLatitude(), e1.getLongitude()))
                 .add(new LatLng(e2.getLatitude(), e2.getLongitude()))
-                .width((float) PLINE_MAX_WIDTH / generation)
+                .width((float) LINE_MAX_WIDTH / generation)
                 .color(color)));
     }
     private boolean validateGender(String gender) {

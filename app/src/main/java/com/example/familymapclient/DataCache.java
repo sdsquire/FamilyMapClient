@@ -1,9 +1,9 @@
 package com.example.familymapclient;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 
 import Models.EventModel;
@@ -14,10 +14,12 @@ public class DataCache {
     public static synchronized DataCache getInstance() { return instance; }
     private DataCache(){}
 
-    private EventOptions options = new EventOptions();
+    private final EventOptions options = new EventOptions();
     private final HashMap<String, PersonModel> people = new HashMap<>();
     private final HashMap<String, EventModel> events = new HashMap<>();
     private final HashMap<String, ArrayList<EventModel>> personEvents = new HashMap<>();
+    private final HashSet<String> fatherSide = new HashSet<>();
+    private final HashSet<String> motherSide = new HashSet<>();
     private String currentUserID;
     private LoginInfo loginInfo;
 
@@ -28,19 +30,18 @@ public class DataCache {
     public void addEvent(EventModel event) {
         events.put(event.getEventID(), event);
         Objects.requireNonNull(personEvents.get(event.getPersonID())).add(event);
-        Collections.sort(Objects.requireNonNull(personEvents.get(event.getPersonID())), Comparator.comparingInt(EventModel::getYear));
+        Objects.requireNonNull(personEvents.get(event.getPersonID())).sort(Comparator.comparingInt(EventModel::getYear));
     }
 
-    public static void setOptions(EventOptions options) {instance.options = options;}
     public static void setCurrentUser(String personID) { instance.currentUserID = personID; }
     public static void setUserLogin(LoginInfo LogInf) {instance.loginInfo = LogInf;}
 
     public EventOptions getOptions() {return instance.options;}
     public HashMap<String, PersonModel> getPeople() { return people; }
-    public PersonModel getPerson(String personID) { return instance.people.getOrDefault(personID, null);}
-    public EventModel getEvent(String eventID) { return instance.events.getOrDefault(eventID, null);}
     public HashMap<String, EventModel> getEvents() { return events; }
     public HashMap<String, ArrayList<EventModel>> getPersonEvents() { return personEvents; }
+    public PersonModel getPerson(String personID) { return instance.people.getOrDefault(personID, null);}
+    public EventModel getEvent(String eventID) { return instance.events.getOrDefault(eventID, null);}
     public ArrayList<EventModel> getPersonEvents(String personID) {return personEvents.get(personID);}
     public PersonModel getCurrentUser() {return instance.people.get(currentUserID);}
     public LoginInfo getUserLogin() { return loginInfo; }
@@ -53,4 +54,25 @@ public class DataCache {
                 children.add(person);
         return children;
     }
+
+    public HashSet<String> getFatherSide() {
+        if (fatherSide.size() == 0)
+            getAncestors(getCurrentUser().getPersonID(), fatherSide);
+        return fatherSide;
+    }
+    public HashSet<String> getMotherSide() {
+        if (motherSide.size() == 0)
+            getAncestors(getCurrentUser().getPersonID(), motherSide);
+        return motherSide;
+    }
+    private void getAncestors(String personID, HashSet<String> parentSide) {
+        parentSide.add(personID);
+        PersonModel currPerson = people.get(personID);
+        assert currPerson != null;
+        if (currPerson.getFatherID() != null)
+            getAncestors(currPerson.getFatherID(), parentSide);
+        if (currPerson.getMotherID() != null)
+            getAncestors(currPerson.getMotherID(), parentSide);
+    }
+
 }

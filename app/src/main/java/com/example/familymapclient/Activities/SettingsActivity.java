@@ -32,9 +32,9 @@ public class SettingsActivity extends AppCompatActivity {
         familyTreeSwitch.setChecked(options.showFamilyTreeLines());
         spouseSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setSpouseLines(isChecked));
         spouseSwitch.setChecked(options.showSpouseLines());
-        fatherSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setFatherSideLines(isChecked));
+        fatherSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setFatherSideEvents(isChecked));
         fatherSwitch.setChecked(options.showFatherSideLines());
-        motherSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setMotherSideLines(isChecked));
+        motherSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setMotherSideEvents(isChecked));
         motherSwitch.setChecked(options.showMotherSideLines());
         maleSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setMaleEvents(isChecked));
         maleSwitch.setChecked(options.showMaleEvents());

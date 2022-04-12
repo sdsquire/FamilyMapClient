@@ -78,7 +78,11 @@ public class SearchActivity extends AppCompatActivity {
 
     private boolean eventInSettingsFilter(EventModel event) {
         PersonModel currPerson = FMData.getPerson(event.getPersonID());
-        if (currPerson.getGender().equals("m") && !options.showMaleEvents() || currPerson.getGender().equals("f") && !options.showFemaleEvents())
+        if (currPerson.getGender().equals("m") && !options.showMaleEvents() ||
+            currPerson.getGender().equals("f") && !options.showFemaleEvents())
+            return false;
+        if (FMData.getFatherSide().contains(currPerson.getPersonID()) && !options.showFatherSideLines() ||
+            FMData.getMotherSide().contains(currPerson.getPersonID()) && !options.showMotherSideLines())
             return false;
         return true;
     }
