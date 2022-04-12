@@ -1,5 +1,6 @@
 package com.example.familymapclient.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,12 @@ public class SettingsActivity extends AppCompatActivity {
         femaleSwitch.setOnCheckedChangeListener( (button, isChecked) -> options.setFemaleEvents(isChecked));
         femaleSwitch.setChecked(options.showFemaleEvents());
 
-        findViewById(R.id.logoutView).setOnClickListener(View -> {});
+        findViewById(R.id.logoutView).setOnClickListener(View -> {
+            DataCache.clear();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.LOGOUT_KEY, true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
     }
 }

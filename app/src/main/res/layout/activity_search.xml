@@ -37,7 +37,4 @@
         android:layout_height="0dp"
         android:id="@+id/search_results"
         android:layout_weight="1"/>
-
-
-
 </LinearLayout>

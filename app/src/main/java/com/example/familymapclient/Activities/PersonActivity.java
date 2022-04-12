@@ -179,11 +179,15 @@ public class PersonActivity extends AppCompatActivity {
                     assert currPerson != null;
                     descriptionText.setText(getString(R.string.personName, currPerson.getFirstName(), currPerson.getLastName()));
                     itemView.setOnClickListener(View -> {
-                        MapFragment fragment = new MapFragment();
-                        Bundle args = new Bundle();
-                        args.putString(MapFragment.EVENT_KEY, currEvent.getEventID());
-                        fragment.setArguments(args);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.personActivityLayout, fragment).commit();
+                        Intent intent = new Intent(PersonActivity.this, EventActivity.class);
+                        intent.putExtra(MapFragment.EVENT_KEY, currEvent.getEventID());
+                        intent.putExtra(MapFragment.COLOR_KEY, PersonActivity.this.getIntent().getStringExtra(MapFragment.COLOR_KEY));
+                        startActivity(intent);
+//                        MapFragment fragment = new MapFragment();
+//                        Bundle args = new Bundle();
+//                        args.putString(MapFragment.EVENT_KEY, currEvent.getEventID());
+//                        fragment.setArguments(args);
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.personActivityLayout, fragment).commit();
                     });
                     break;
                 case PERSON_GROUP_POSITION: // ... OPEN NEW PERSON ACTIVITY BASED ON CLICKED PERSON

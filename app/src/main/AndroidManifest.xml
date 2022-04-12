@@ -24,6 +24,8 @@
             android:parentActivityName=".Activities.MainActivity"/>
         <activity android:name=".Activities.SettingsActivity"
             android:parentActivityName=".Activities.MainActivity"/>
+        <activity android:name=".Activities.EventActivity"
+            android:parentActivityName=".Activities.MainActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

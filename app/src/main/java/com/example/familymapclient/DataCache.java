@@ -10,8 +10,9 @@ import Models.EventModel;
 import Models.PersonModel;
 
 public class DataCache {
-    private static final DataCache instance = new DataCache();
+    private static DataCache instance = new DataCache();
     public static synchronized DataCache getInstance() { return instance; }
+    public static synchronized void clear() {instance = new DataCache();}
     private DataCache(){}
 
     private final EventOptions options = new EventOptions();
@@ -57,12 +58,12 @@ public class DataCache {
 
     public HashSet<String> getFatherSide() {
         if (fatherSide.size() == 0)
-            getAncestors(getCurrentUser().getPersonID(), fatherSide);
+            getAncestors(getCurrentUser().getFatherID(), fatherSide);
         return fatherSide;
     }
     public HashSet<String> getMotherSide() {
         if (motherSide.size() == 0)
-            getAncestors(getCurrentUser().getPersonID(), motherSide);
+            getAncestors(getCurrentUser().getMotherID(), motherSide);
         return motherSide;
     }
     private void getAncestors(String personID, HashSet<String> parentSide) {
@@ -74,5 +75,4 @@ public class DataCache {
         if (currPerson.getMotherID() != null)
             getAncestors(currPerson.getMotherID(), parentSide);
     }
-
 }

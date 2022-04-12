@@ -1,4 +1,4 @@
-package com.example.familymapclient.Activities;
+package com.example.familymapclient.Activities; // FIXME: Save activity state when navigating away
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -49,8 +50,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private final HashMap<String, ArrayList<EventModel>> markedEvents = new HashMap<>(); // TODO: could combine the next two variables into one to reduce code duplication
     private final HashSet<Polyline> lines = new HashSet<>();
 
-    private final HashMap<String, Float> colors = new HashMap<>();
+    private HashMap<String, Double> colors;
     public static final String EVENT_KEY = "eventKey";
+    public static final String COLOR_KEY = "colorKey";
     private static final int MAX_HUE = 360;
     private static final int LINE_MAX_WIDTH = 16;
     private static final int SPOUSE_LINES = Color.rgb(240, 100, 100);
@@ -70,9 +72,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         String currEventID = getArguments() != null ? getArguments().getString(EVENT_KEY, null) : null;
+        String colorsJson = getArguments() != null ? getArguments().getString(COLOR_KEY, null) : null;
         if (currEventID == null)
             currEventID = FMData.getPersonEvents(FMData.getCurrentUser().getPersonID()).get(0).getEventID();
         baseEvent = FMData.getEvent(currEventID);
+        colors = colorsJson != null ? new Gson().fromJson(colorsJson, HashMap.class) : new HashMap<>();
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
@@ -86,9 +90,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         SupportMapFragment map = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
-        colors.put("death", BitmapDescriptorFactory.HUE_RED);
-        colors.put("birth", BitmapDescriptorFactory.HUE_GREEN);
-        colors.put("marriage", BitmapDescriptorFactory.HUE_YELLOW);
+        colors.put("death", (double) BitmapDescriptorFactory.HUE_RED);
+        colors.put("birth", (double) BitmapDescriptorFactory.HUE_GREEN);
+        colors.put("marriage",(double) BitmapDescriptorFactory.HUE_YELLOW);
         if (map != null)
             map.getMapAsync(this);
     }
@@ -104,6 +108,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Intent intent = item.getItemId() == R.id.search_menu ? new Intent(requireActivity(), SearchActivity.class) :
                         item.getItemId() == R.id.settings_menu ? new Intent(requireActivity(), SettingsActivity.class) :
                                 null;
+        if (intent != null)
+            intent.putExtra(COLOR_KEY, new Gson().toJson(colors));
         startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
@@ -136,7 +142,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View eventDescriptor = requireView().findViewById(R.id.eventDescriptor);
         eventDescriptor.setOnClickListener( View ->
             startActivity(new Intent(getActivity(), PersonActivity.class)
-                .putExtra(PersonActivity.PERSON_KEY, baseEvent.getPersonID()))
+                .putExtra(PersonActivity.PERSON_KEY, baseEvent.getPersonID())
+                .putExtra(COLOR_KEY, new Gson().toJson(colors)))
             );
         eventDescriptor.setEnabled(false);
     }
@@ -157,7 +164,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // ADD MARKERS //
         for (EventModel event : eventsToMark) {
-            float color;
+            double color;
             if (!colors.containsKey(event.getEventType())){
                 color = new Random().nextInt(MAX_HUE);
                 colors.put(event.getEventType(), color);
@@ -166,7 +173,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(new LatLng(event.getLatitude(), event.getLongitude()))
-                    .icon(BitmapDescriptorFactory.defaultMarker(color)));
+                    .icon(BitmapDescriptorFactory.defaultMarker((float) color)));
             assert marker != null;
             marker.setTag(event);
 
