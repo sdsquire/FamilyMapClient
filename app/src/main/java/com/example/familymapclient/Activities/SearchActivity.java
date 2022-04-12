@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -56,6 +58,21 @@ public class SearchActivity extends AppCompatActivity {// FIXME: Launches map ac
 
         findViewById(R.id.clearButton).setOnClickListener(View-> searchBar.setText(""));
         searchResults.setAdapter(searchAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.child_activity_menu, menu);
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(MainActivity.LOGOUT_KEY, false);
+        startActivity(intent);
+        return true;
     }
 
     private void search(String query) {
