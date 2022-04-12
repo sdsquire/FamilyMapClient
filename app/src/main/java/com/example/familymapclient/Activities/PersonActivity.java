@@ -79,8 +79,6 @@ public class PersonActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() != R.id.home)
-//            return false;
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(MainActivity.LOGOUT_KEY, false);
@@ -184,11 +182,6 @@ public class PersonActivity extends AppCompatActivity {
                         intent.putExtra(MapFragment.EVENT_KEY, currEvent.getEventID());
                         intent.putExtra(MapFragment.COLOR_KEY, PersonActivity.this.getIntent().getStringExtra(MapFragment.COLOR_KEY));
                         startActivity(intent);
-//                        MapFragment fragment = new MapFragment();
-//                        Bundle args = new Bundle();
-//                        args.putString(MapFragment.EVENT_KEY, currEvent.getEventID());
-//                        fragment.setArguments(args);
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.personActivityLayout, fragment).commit();
                     });
                     break;
                 case PERSON_GROUP_POSITION: // ... OPEN NEW PERSON ACTIVITY BASED ON CLICKED PERSON

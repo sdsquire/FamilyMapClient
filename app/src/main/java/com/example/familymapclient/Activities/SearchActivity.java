@@ -170,11 +170,10 @@ public class SearchActivity extends AppCompatActivity {// FIXME: Launches map ac
                 startActivity(new Intent(SearchActivity.this, PersonActivity.class)
                         .putExtra(PersonActivity.PERSON_KEY, currPerson.getPersonID()));
             else {
-                MapFragment fragment = new MapFragment();
-                Bundle args = new Bundle();
-                args.putString(MapFragment.EVENT_KEY, currEvent.getEventID());
-                fragment.setArguments(args);
-                getSupportFragmentManager().beginTransaction().replace(R.id.searchActivityLayout, fragment).commit();
+                Intent intent = new Intent(SearchActivity.this, EventActivity.class);
+                intent.putExtra(MapFragment.EVENT_KEY, currEvent.getEventID());
+                intent.putExtra(MapFragment.COLOR_KEY, SearchActivity.this.getIntent().getStringExtra(MapFragment.COLOR_KEY));
+                startActivity(intent);
             }
         }
     }
