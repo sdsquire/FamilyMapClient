@@ -13,9 +13,11 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.example.familymapclient.DataCache;
 import com.example.familymapclient.EventOptions;
 import com.example.familymapclient.R;
+import com.google.gson.Gson;
 
 public class SettingsActivity extends AppCompatActivity {
     private final EventOptions options = DataCache.getInstance().getOptions();
+    public static final String OPTIONS_KEY = "options";
 
 
     @Override
@@ -51,17 +53,25 @@ public class SettingsActivity extends AppCompatActivity {
 
             SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.APP_NAME_KEY, Context.MODE_PRIVATE);
             sharedPreferences.edit().clear().apply();
+//            sharedPreferences.edit().remove(MainActivity.LOGIN_INFO_KEY).apply();
+//            sharedPreferences.edit().remove(OPTIONS_KEY).apply();
             Intent intent = new Intent(this, MainActivity.class);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);//FIXME fix logout button
+            startActivity(intent);
 
         });
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.APP_NAME_KEY, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(OPTIONS_KEY, new Gson().toJson(options)).apply();
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.child_activity_menu, menu);
+//        getMenuInflater().inflate(R.menu.child_activity_menu, menu);
         return false;
     }
 

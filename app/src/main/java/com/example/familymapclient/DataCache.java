@@ -39,7 +39,7 @@ public class DataCache {
     }
 
     public static void setCurrentUser(String personID) { getInstance().currentUserID = personID; }
-    public static void setUserLogin(LoginInfo LogInf) {getInstance().loginInfo = LogInf;}
+    public static void setUserLogin(LoginInfo LogInf) { getInstance().loginInfo = LogInf; }
 
     public EventOptions getOptions() {return getInstance().options;}
     public HashMap<String, PersonModel> getPeople() { return people; }
@@ -79,4 +79,5 @@ public class DataCache {
         if (currPerson.getMotherID() != null)
             getAncestors(currPerson.getMotherID(), parentSide);
     }
+
 }

@@ -16,4 +16,5 @@ public class LoginInfo {
     public String getServerHost() { return serverHost; }
     public String getServerPort() { return serverPort; }
     public String getUsername() { return username; }
-    public String getPassword() { return password; } }
+    public String getPassword() { return password; }
+}

@@ -46,6 +46,7 @@ public class ServerProxy {
             // SAVE DATA AND RETURN LOGIN RESULT //
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 DataCache.setUserLogin(new LoginInfo(serverHost, serverPort, req.getUsername(), req.getPassword()));
+//                DataCache.getInstance().getOptions().setOptions()
 
                 Reader resultBody = new InputStreamReader(http.getInputStream());
                 return new Gson().fromJson(resultBody, LoginResult.class);

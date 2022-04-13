@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.familymapclient.DataCache;
+import com.example.familymapclient.EventOptions;
 import com.example.familymapclient.LoginInfo;
 import com.example.familymapclient.R;
 import com.google.gson.Gson;
@@ -37,7 +38,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Lis
     }
 
     public void userAuthenticated() {
-        SharedPreferences.Editor editor = getSharedPreferences(APP_NAME_KEY, Context.MODE_PRIVATE).edit();
+        DataCache FMData = DataCache.getInstance();
+        SharedPreferences sharedPreferences = getSharedPreferences(APP_NAME_KEY, Context.MODE_PRIVATE);
+        String optionsString = sharedPreferences.getString(SettingsActivity.OPTIONS_KEY, null);
+        if (optionsString != null)
+            FMData.getOptions().updateOptions(new Gson().fromJson(optionsString, EventOptions.class));
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(LOGIN_INFO_KEY, new Gson().toJson(DataCache.getInstance().getUserLogin()));
         editor.apply();
 

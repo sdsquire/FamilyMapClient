@@ -45,7 +45,6 @@ public class AuthenticateTask implements Runnable {
         boolean success = proxy.getPersons(authtoken) && proxy.getEvents(authtoken);
         assert DataCache.getInstance().getPeople().size() != 0;
         assert DataCache.getInstance().getEvents().size() != 0;
-//        this.CacheUser();
 
         // SEND MESSAGE //
         Message message = Message.obtain();

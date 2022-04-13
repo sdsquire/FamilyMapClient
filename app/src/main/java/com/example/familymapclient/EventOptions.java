@@ -9,17 +9,18 @@ public class EventOptions {
     protected boolean maleEvents;
     protected boolean femaleEvents;
 
-    public EventOptions(boolean lifeStoryLines, boolean familyTreeLines, boolean spouseLines, boolean fatherSideEvents, boolean motherSideEvents, boolean maleEvents, boolean femaleEvents) {
-        this.lifeStoryLines = lifeStoryLines;
-        this.familyTreeLines = familyTreeLines;
-        this.spouseLines = spouseLines;
-        this.fatherSideEvents = fatherSideEvents;
-        this.motherSideEvents = motherSideEvents;
-        this.maleEvents = maleEvents;
-        this.femaleEvents = femaleEvents;
-    }
     public EventOptions() {
         lifeStoryLines = familyTreeLines = spouseLines = fatherSideEvents = motherSideEvents = maleEvents = femaleEvents = true;
+    }
+
+    public void updateOptions(EventOptions that){
+        this.lifeStoryLines = that.lifeStoryLines;
+        this.familyTreeLines = that.familyTreeLines;
+        this.spouseLines = that.spouseLines;
+        this.fatherSideEvents = that.fatherSideEvents;
+        this.motherSideEvents = that.motherSideEvents;
+        this.maleEvents = that.maleEvents;
+        this.femaleEvents = that.femaleEvents;
     }
 
     public boolean showLifeStoryLines() { return lifeStoryLines; }
