@@ -84,7 +84,6 @@ public class PersonActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(MainActivity.LOGOUT_KEY, false);
         startActivity(intent);
         return true;
     }

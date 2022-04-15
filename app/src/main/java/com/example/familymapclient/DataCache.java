@@ -1,10 +1,6 @@
 package com.example.familymapclient;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 import Models.EventModel;
 import Models.PersonModel;
@@ -16,8 +12,8 @@ public class DataCache {
             instance = new DataCache();
         return instance;
     }
-    public static synchronized void clear() {instance = null;}
-    private DataCache(){}
+    public static synchronized void clear() { instance = null; }
+    private DataCache() { }
 
     private final EventOptions options = new EventOptions();
     private final HashMap<String, PersonModel> people = new HashMap<>();
@@ -32,6 +28,7 @@ public class DataCache {
         people.put(person.getPersonID(), person);
         personEvents.put(person.getPersonID(), new ArrayList<>());
     }
+
     public void addEvent(EventModel event) {
         events.put(event.getEventID(), event);
         Objects.requireNonNull(personEvents.get(event.getPersonID())).add(event);
@@ -40,15 +37,14 @@ public class DataCache {
 
     public static void setCurrentUser(String personID) { getInstance().currentUserID = personID; }
     public static void setUserLogin(LoginInfo LogInf) { getInstance().loginInfo = LogInf; }
-
-    public EventOptions getOptions() {return getInstance().options;}
+    public EventOptions getOptions() { return getInstance().options; }
     public HashMap<String, PersonModel> getPeople() { return people; }
     public HashMap<String, EventModel> getEvents() { return events; }
     public HashMap<String, ArrayList<EventModel>> getPersonEvents() { return personEvents; }
-    public PersonModel getPerson(String personID) { return getInstance().people.getOrDefault(personID, null);}
-    public EventModel getEvent(String eventID) { return getInstance().events.getOrDefault(eventID, null);}
-    public ArrayList<EventModel> getPersonEvents(String personID) {return personEvents.get(personID);}
-    public PersonModel getCurrentUser() {return getInstance().people.get(currentUserID);}
+    public PersonModel getPerson(String personID) { return getInstance().people.getOrDefault(personID, null); }
+    public EventModel getEvent(String eventID) { return getInstance().events.getOrDefault(eventID, null); }
+    public ArrayList<EventModel> getPersonEvents(String personID) { return personEvents.get(personID); }
+    public PersonModel getCurrentUser() { return getInstance().people.get(currentUserID); }
     public LoginInfo getUserLogin() { return loginInfo; }
 
     // More advanced get functions
@@ -65,11 +61,13 @@ public class DataCache {
             getAncestors(getCurrentUser().getFatherID(), fatherSide);
         return fatherSide;
     }
+
     public HashSet<String> getMotherSide() {
         if (motherSide.size() == 0)
             getAncestors(getCurrentUser().getMotherID(), motherSide);
         return motherSide;
     }
+
     private void getAncestors(String personID, HashSet<String> parentSide) {
         parentSide.add(personID);
         PersonModel currPerson = people.get(personID);
@@ -79,10 +77,4 @@ public class DataCache {
         if (currPerson.getMotherID() != null)
             getAncestors(currPerson.getMotherID(), parentSide);
     }
-
-
-
-    // THE FOLLOWING CLASSES COPY THE FUNCTIONALITY FROM THEIR LABELED CLASSES, AND ARE USED  SOELY FOR TESTING //
-
-
 }

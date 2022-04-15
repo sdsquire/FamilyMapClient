@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 public class MainActivity extends AppCompatActivity implements LoginFragment.Listener {
 
     public static final String LOGIN_INFO_KEY = "LoginInfo";
-    public static final String LOGOUT_KEY = "Logout";
     public static final String APP_NAME_KEY = "FamilyMap";
 
     @Override

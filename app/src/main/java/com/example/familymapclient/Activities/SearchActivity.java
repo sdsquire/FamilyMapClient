@@ -56,7 +56,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.clearButton).setOnClickListener(View-> searchBar.setText(""));
+        findViewById(R.id.clearButton).setOnClickListener(View -> searchBar.setText(""));
         searchResults.setAdapter(searchAdapter);
     }
 
@@ -70,7 +70,6 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(MainActivity.LOGOUT_KEY, false);
         startActivity(intent);
         return true;
     }
@@ -80,14 +79,14 @@ public class SearchActivity extends AppCompatActivity {
         peopleResult.clear();
         eventsResult.clear();
         for (PersonModel person : FMData.getPeople().values())
-            for (String attribute : new String[] {person.getFirstName(), person.getLastName()})
+            for (String attribute : new String[]{person.getFirstName(), person.getLastName()})
                 if (attribute.toLowerCase(Locale.ROOT).contains(query)) {
                     peopleResult.add(person);
                     break;
                 }
 
         for (EventModel event : FMData.getEvents().values())
-            for (String attribute : new String[] {event.getCountry(), event.getCity(), event.getEventType(), String.valueOf(event.getYear())})
+            for (String attribute : new String[]{event.getCountry(), event.getCity(), event.getEventType(), String.valueOf(event.getYear())})
                 if (attribute.toLowerCase(Locale.ROOT).contains(query) && eventInSettingsFilter(event)) {
                     eventsResult.add(event);
                     break;
@@ -96,7 +95,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private boolean eventInSettingsFilter(EventModel event) {
         PersonModel currPerson = FMData.getPerson(event.getPersonID());
-        return (!currPerson.getGender().equals("m") ||  options.showMaleEvents()) &&
+        return (!currPerson.getGender().equals("m") || options.showMaleEvents()) &&
                 (!currPerson.getGender().equals("f") || options.showFemaleEvents()) &&
                 (!FMData.getFatherSide().contains(currPerson.getPersonID()) || options.showFatherSideLines()) &&
                 (!FMData.getMotherSide().contains(currPerson.getPersonID()) || options.showMotherSideLines());
@@ -126,9 +125,14 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getItemCount() { return peopleResults.size() + eventResults.size();}
+        public int getItemCount() {
+            return peopleResults.size() + eventResults.size();
+        }
+
         @Override
-        public int getItemViewType(int position) { return position < peopleResults.size() ? PERSON_GROUP_ID : EVENT_GROUP_ID; }
+        public int getItemViewType(int position) {
+            return position < peopleResults.size() ? PERSON_GROUP_ID : EVENT_GROUP_ID;
+        }
     }
 
     private class SearchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -149,14 +153,14 @@ public class SearchActivity extends AppCompatActivity {
             this.icon = itemView.findViewById(R.id.listItemIcon);
         }
 
-        private void bind (PersonModel person) {
+        private void bind(PersonModel person) {
             currPerson = person;
             data.setText(String.format("%s %s", person.getFirstName(), person.getLastName()));
             description.setText("");
             icon.setImageResource(person.getGender().equals("m") ? R.drawable.male_icon : R.drawable.female_icon);
         }
 
-        private void bind (EventModel event) {
+        private void bind(EventModel event) {
             currEvent = event;
             data.setText(getString(R.string.lifeEventsData, event.getEventType().toUpperCase(Locale.ROOT), event.getCity(), event.getCountry(), event.getYear()));
             PersonModel currPerson = DataCache.getInstance().getPerson(event.getPersonID());
@@ -177,13 +181,4 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-    // FOLLOWING FUNCTIONS ARE USED SOELY FOR THE PURPOSE OF TESTING IN THE UNIT TESTS //
-//    public static void searchTest(String query) {
-//        ArrayList<>
-//    }
-//    public ArrayList<PersonModel> getPeopleResult() {return peopleResult;}
-//    public ArrayList<EventModel> getEventsResult() {return eventsResult;}
 }

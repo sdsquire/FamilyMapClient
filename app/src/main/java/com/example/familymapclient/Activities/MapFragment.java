@@ -47,7 +47,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private PersonModel basePerson = null;
     private final DataCache FMData = DataCache.getInstance();
     private final EventOptions options = FMData.getOptions();
-    private final HashMap<String, ArrayList<EventModel>> markedEvents = new HashMap<>(); // TODO: could combine the next two variables into one to reduce code duplication
+    private final HashMap<String, ArrayList<EventModel>> markedEvents = new HashMap<>();
     private final HashSet<Polyline> lines = new HashSet<>();
 
     private HashMap<String, Double> colors;
@@ -180,7 +180,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             assert marker != null;
             marker.setTag(event);
 
-            // REGISTER EVENT AS MARKED // TODO: With previous TODO, could eliminate this
+            // REGISTER EVENT AS MARKED //
             if (!markedEvents.containsKey(event.getPersonID()))
                 markedEvents.put(event.getPersonID(), new ArrayList<>());
             markedEvents.get(event.getPersonID()).add(event);
