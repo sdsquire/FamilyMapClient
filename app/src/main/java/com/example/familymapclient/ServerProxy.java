@@ -26,8 +26,6 @@ public class ServerProxy {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
     }
-    public String getServerHost() { return serverHost; }
-    public String getServerPort() { return serverPort; }
 
     public LoginResult login(LoginRequest req) {
         try {
@@ -49,7 +47,9 @@ public class ServerProxy {
 //                DataCache.getInstance().getOptions().setOptions()
 
                 Reader resultBody = new InputStreamReader(http.getInputStream());
-                return new Gson().fromJson(resultBody, LoginResult.class);
+                LoginResult result = new Gson().fromJson(resultBody, LoginResult.class);
+                DataCache.setCurrentUser(result.getPersonID());
+                return result;
             } else
                 return new LoginResult("Bad request");
         } catch (IOException e) {
@@ -73,7 +73,9 @@ public class ServerProxy {
             // RETURN REGISTER RESULT //
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 Reader resultBody = new InputStreamReader(http.getInputStream());
-                return new Gson().fromJson(resultBody, RegisterResult.class);
+                RegisterResult result = new Gson().fromJson(resultBody, RegisterResult.class);
+                DataCache.setCurrentUser(result.getPersonID());
+                return result;
             } else
                 return new RegisterResult("Bad request");
         } catch (IOException e) {
@@ -115,12 +117,16 @@ public class ServerProxy {
             http.connect();
             // WRITE RESULT TO DATACACHE //
             DataCache dataCache = DataCache.getInstance();
-            Reader resultBody = new InputStreamReader(http.getInputStream());
-            GetEventsResult result = new Gson().fromJson(resultBody, GetEventsResult.class);
-            for (EventModel event: result.getData())
-                dataCache.addEvent(event);
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                Reader resultBody = new InputStreamReader(http.getInputStream());
+                GetEventsResult result = new Gson().fromJson(resultBody, GetEventsResult.class);
+                for (EventModel event : result.getData())
+                    dataCache.addEvent(event);
+                return result.isSuccess();
+            } else {
+                return false;
+            }
 
-            return result.isSuccess();
         } catch (IOException e) {
             e.printStackTrace();
             return false;

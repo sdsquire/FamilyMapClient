@@ -52,9 +52,9 @@ public class SettingsActivity extends AppCompatActivity {
             DataCache.clear();
 
             SharedPreferences sharedPreferences = getSharedPreferences(MainActivity.APP_NAME_KEY, Context.MODE_PRIVATE);
-            sharedPreferences.edit().clear().apply();
-//            sharedPreferences.edit().remove(MainActivity.LOGIN_INFO_KEY).apply();
-//            sharedPreferences.edit().remove(OPTIONS_KEY).apply();
+//            sharedPreferences.edit().clear().apply();
+            sharedPreferences.edit().putString(MainActivity.LOGIN_INFO_KEY, null).apply();
+            sharedPreferences.edit().putString(OPTIONS_KEY, null).apply();
             Intent intent = new Intent(this, MainActivity.class);
 //            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -46,7 +46,10 @@ public class PersonActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.personActGender)).setText(currPerson.getGender().equals("m") ? "Male" : "Female");
 
         // FILL EVENT AND PERSON DATA TO PASS TO EXPANDABLE LIST //
-        ArrayList<EventModel> eventList = FMData.getPersonEvents().get(currPerson.getPersonID());
+
+        ArrayList<EventModel> eventList = new ArrayList<>();
+        if (validateGender(currPerson.getGender()))
+            eventList.addAll(FMData.getPersonEvents(currPerson.getPersonID()));
 
         ArrayList<PersonModel> familyList = new ArrayList<>();
         if (currPerson.getFatherID() != null && options.showMaleEvents() && options.showFatherSideLines()) {

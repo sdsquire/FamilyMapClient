@@ -27,7 +27,7 @@ import java.util.Locale;
 import Models.EventModel;
 import Models.PersonModel;
 
-public class SearchActivity extends AppCompatActivity {// FIXME: Launches map activity in smaller window.
+public class SearchActivity extends AppCompatActivity {
     private static final int PERSON_GROUP_ID = 1;
     private static final int EVENT_GROUP_ID = 0;
 
@@ -177,4 +177,13 @@ public class SearchActivity extends AppCompatActivity {// FIXME: Launches map ac
             }
         }
     }
+
+
+
+    // FOLLOWING FUNCTIONS ARE USED SOELY FOR THE PURPOSE OF TESTING IN THE UNIT TESTS //
+//    public static void searchTest(String query) {
+//        ArrayList<>
+//    }
+//    public ArrayList<PersonModel> getPeopleResult() {return peopleResult;}
+//    public ArrayList<EventModel> getEventsResult() {return eventsResult;}
 }
