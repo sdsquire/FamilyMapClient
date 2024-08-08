@@ -2,16 +2,22 @@
 
 **Family Map** is an Android application that provides a geographical view into your family history. By inputting your family tree, you can explore where each member of your family was born, married, died, and other major life events on an interactive map.
 
-<img src="FamilyMapDemo.png" alt="Demo of the FamilyMap App" width=400>
+<img src="demo_images/map.png" alt="Demo of the FamilyMap App" width=400>
 
 This repository contains the Android client code, which communicates with a backend server to manage user information and family history data. The backend server is available in the [FamilyMapServer repository](https://github.com/yourusername/family-map-server).
 
 ## Features
 
 - User login and registration
-- Interactive maps showing family events
+<img src="demo_images/login.png" alt="The Login Page" width=400>
+- World map showing family events
+<img src="demo_images/map.png" alt="Demo of the FamilyMap App" width=400>
+- Selecting pins to trace the family member's life path
+<img src="demo_images/life_line.png" alt="Demonstrates the Life Line Feature" width=400>
 - Filtering and searching family history data
+<img src="demo_images/search.png" alt="Searching a Person" width=400>
 - Settings customization
+<img src="demo_images/settings.png" alt="The Settings section" width=400>
 
 ## Getting Started
 
